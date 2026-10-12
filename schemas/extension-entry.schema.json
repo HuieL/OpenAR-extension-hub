@@ -45,6 +45,68 @@
       "maxLength": 512,
       "description": "English one-to-few-line description."
     },
+    "authors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "github": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9-]{1,39}$",
+            "description": "GitHub login without '@', when the author has one."
+          }
+        }
+      },
+      "description": "Original creators of the extension, distinct from the OpenRA adapter and the registry submitter. Verified against the source repo's commits, license, or README during review."
+    },
+    "maintainers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9-]{1,39}$"
+      },
+      "description": "GitHub logins currently maintaining the extension."
+    },
+    "contributors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9-]{1,39}$"
+      },
+      "description": "Notable GitHub logins that contributed."
+    },
+    "adapters": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9-]{1,39}$"
+      },
+      "description": "GitHub logins of the people who adapted the extension for OpenRA. Adapting is not authorship."
+    },
+    "registrySubmitter": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9-]{1,39}$",
+      "description": "GitHub login of whoever submitted this entry. The submitter is not an author by default."
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32
+      },
+      "description": "Coarse categories, e.g. mcp, cli, ui."
+    },
     "i18n": {
       "type": "object",
       "additionalProperties": false,
