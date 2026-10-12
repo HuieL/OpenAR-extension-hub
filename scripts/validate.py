@@ -30,7 +30,7 @@ MAX_ENTRY_BYTES = 256 * 1024
 MAX_ASSET_BYTES = 512 * 1024 * 1024
 LOCALES = {"en", "zh-CN", "ja", "ko", "es"}
 REVIEW_STATUSES = {"unreviewed", "reviewed", "deprecated", "high-risk"}
-DELIVERIES = {"bundled", "package", "mcp-local", "mcp-remote", "cli"}
+DELIVERIES = {"package", "mcp-local", "mcp-remote", "cli"}
 INSTALLABLE = {"package", "mcp-local", "cli"}
 INTEGRATIONS = {"L0", "L1", "L2", "L3"}
 UI_CONTRIBUTIONS = {"main-page", "right-panel", "commands", "preview"}
@@ -344,7 +344,7 @@ def check_assets(entry: dict, entry_id: str) -> None:
         if installable:
             fail(entry_id, "installable deliveries (package/mcp-local/cli) require assets")
         else:
-            fail(entry_id, "bundled and mcp-remote deliveries must not carry assets")
+            fail(entry_id, "mcp-remote deliveries must not carry assets")
         return
     platforms = set()
     for asset in assets:

@@ -131,7 +131,7 @@ def _(e):
     e["source"]["revision"] = "main"
 
 
-@case("assets declared on a bundled delivery")
+@case("bundled delivery (built-ins are not listed)")
 def _(e):
     e["delivery"] = "bundled"
 

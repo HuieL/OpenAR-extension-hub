@@ -28,7 +28,7 @@
       "type": "string",
       "pattern": "^[a-z0-9_-]+(\\.[a-z0-9_-]+)+$",
       "maxLength": 128,
-      "description": "Namespaced identity, e.g. openra.calendar. Lowercase segments of [a-z0-9_-] (each at most 64 chars), at least two; equal to the directory name; globally unique; never reused. openra.* is first-party."
+      "description": "Namespaced identity, e.g. acme.calendar. Lowercase segments of [a-z0-9_-] (each at most 64 chars), at least two; equal to the directory name; globally unique; never reused. openra.* is reserved for the app's built-in extensions and never listed here."
     },
     "kind": {
       "const": "extension"
@@ -279,13 +279,12 @@
     },
     "delivery": {
       "enum": [
-        "bundled",
         "package",
         "mcp-local",
         "mcp-remote",
         "cli"
       ],
-      "description": "bundled: ships with the app, no assets, updates follow app releases. package/mcp-local/cli: installable, require assets. mcp-remote: a registered connection, never a fake binary install."
+      "description": "package/mcp-local/cli: installable, require assets. mcp-remote: a registered connection, never a fake binary install. Built-in extensions ship with the app and are not listed here."
     },
     "integration": {
       "enum": [

@@ -8,14 +8,16 @@ account, and no install script to run here.
 
 1. Host your extension in your own repository. This hub does not copy
    third-party repositories; `delivery` decides what an install resolves to:
-   - `bundled` — ships with the OpenRA app; listed read-only, no assets;
    - `package` / `cli` — a pinned release artifact per platform;
    - `mcp-local` — a package whose MCP server command runs inside the
      installed tree;
    - `mcp-remote` — a registered connection; nothing is downloaded.
+
+   Extensions that ship inside the OpenRA app are not listed here; the app's
+   own catalog shows them.
 2. Create `entries/extensions/<id>/entry.json` following
    `schemas/extension-entry.schema.json`. The required facts:
-   - `id` — lowercase namespaced identity (e.g. `openra.calendar`), equal to
+   - `id` — lowercase namespaced identity (e.g. `acme.calendar`), equal to
      the directory name, globally unique, never reused;
    - `authors` — the original creator(s), credited from the source repo's
      commits, license, or README. Adapting an extension for OpenRA is
