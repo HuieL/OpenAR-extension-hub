@@ -10,7 +10,7 @@
 - **Y 负责本仓库的全部内容**：目录、扩展条目、schema、生成的 `extensions.json`、校验脚本、CI、贡献说明、播种与发布。
 - **不负责**：OpenRA 侧 ExtensionDefinition/binding/Hub UI（G+D）、registry 客户端/安装/回滚（C）、执行隔离/权限（A）、Skill（X 的 `OpenAR-skill-hub`）。
 - **协作**：
-  - 条目里的扩展 manifest 必须符合 G 维护的 ExtensionDefinition 契约（`src/local/extension_manifest.rs`），**不另造格式**；契约有缺口时向 G 提，不在本仓自行扩字段。
+  - 条目里的扩展 manifest 必须符合 G 维护的 ExtensionDefinition 契约，**不另造格式**；契约有缺口时向 G 提，不在本仓自行扩字段。
   - 与 X 共用「条目公共核心字段」（id/kind/name/summary/source/version/license/review/compat），字段名与语义两仓一致。
   - 各功能 owner（H Craft、I Discover/Survey、K Notes、G Calendar/Deadlines 等）提供自己扩展的事实与包，在本仓推 `agent-<x>/<topic>`，Y 审内容，Review 合入 `main`。
 - **分支与合入**：只推 `agent-y/<topic>`；**不直接推 `main`**；Review 审查后合入。
@@ -21,7 +21,7 @@
 
 - 本仓库目前只有一个分支 `agent-k/notes-bundled-facts`（K 的证据交接，**HOLD**：证据不进 hub）。因仓库曾为空，GitHub 暂把它当默认分支；`main` 建立后由用户把默认分支设为 `main`，该分支由 Review 归档删除。
 - OpenRA 已适配并随 App 编译的扩展（`delivery: bundled`，代码随 App 更新，不可单独安装）：`openra.calendar`、`openra.deadlines`、`openra.scratchpad`（Notes）、`openra.craft-suite`、`openra.daily-picks`、`openra.survey`、`openra.paper-reviewer`。`openra.skill-hub` 是宿主内置管理入口，**不作为条目**。`openra.tool` 是 E18 用户自带工具样例（可作为"独立包"示例的来源）。
-- HUB-M1 的 MCP 测试对象：OpenRA `scripts/acceptance-mcp.sh` 的 stdio echo 本地 server（无自定义 UI 的工具集成）。
+- HUB-M1 的 MCP 测试对象：OpenRA 验收用的 stdio echo 本地 MCP server（无自定义 UI 的工具集成）。
 - C 的 registry 客户端（HUB-01）尚未实现；它将按 commit SHA 读取本仓 `extensions.json` 并逐条校验 sha256。
 
 ## 2. 里程碑
@@ -57,7 +57,7 @@
 - 交付：分支 `agent-y/skeleton` → Review 合入成为 `main`。
 
 ### SY-01 首批条目（NEXT）
-- [ ] `openra.mcp-echo`（`delivery: mcp-local`，`integration: L0`）：来源为 OpenRA `scripts/acceptance-mcp.sh` 的 echo fixture，固定 OpenRA revision；这是 HUB-M1 的端到端测试对象。
+- [ ] `openra.mcp-echo`（`delivery: mcp-local`，`integration: L0`）：来源为 OpenRA 验收用 echo fixture 的公开版本（只放 manifest 与公开资产，不复制 OpenRA 源码）；这是 HUB-M1 的端到端测试对象。
 - [ ] 7 个 bundled 条目：calendar、deadlines、scratchpad(Notes)、craft-suite、daily-picks、survey、paper-reviewer——`delivery: bundled`，`integration` 按 OpenRA 实际实现填写（向各 owner 核实，不猜），`compat.minHost` = 首个包含它的 OpenRA 版本；不提供安装资产。
 - [ ] K 的 `agent-k/notes-bundled-facts` 只作为 scratchpad 条目的事实参考，证据本身不进本仓。
 - 交付：`agent-y/seed-mcp-echo`、`agent-y/seed-bundled`（每分支 ≤4 条）。
@@ -77,7 +77,7 @@
 
 - 在 OpenRA 只推 `agent-y/<topic>` 分支；Review 审查，Rust 改动进 Mac 门禁 train 后合入。派工以 OpenRA `TODO.md` 的 Y 行为准。
 - **HUB-05 条目 → ExtensionDefinition 安装/binding（Y 负责）**：
-  - [ ] 使用 X 的 HUB-01 registry 客户端读条目（不另写客户端）；把 `package`/`mcp-local`/`cli` 条目映射为 G 的 ExtensionDefinition + 已登记 binding，经 C 的 `acquire::extension`/`market` + ChangeSet 安装（改 `acquire/*`、`changesets.rs` 需 C 共审）。
+  - [ ] 使用 X 的 HUB-01 registry 客户端读条目（不另写客户端）；把 `package`/`mcp-local`/`cli` 条目映射为 G 的 ExtensionDefinition + 已登记 binding，经 C 的 OpenRA 安装内核 + ChangeSet 安装（改 OpenRA 安装内核需 C 共审）。
   - [ ] `bundled` 条目只做启用/配置映射，不下载；`mcp-remote` 只登记连接，不伪装已安装。
   - [ ] MCP/CLI 使用已有 adapter 实测 transport 与 tools，纯浏览不启动不可信服务；通用工具表单复用 G 已合的 MCP generic tools 宿主表单。
   - [ ] 测试：`openra.mcp-echo` 从目录→批准→固定安装→项目内调用→结果可 @→升级→回滚；目录离线时已装能力可用。
@@ -91,3 +91,11 @@
   - [ ] 反馈与贡献按钮：View Source / Report Issue / Suggest Improvement / Contribute——打开对应 GitHub Issue/Discussion/PR 模板，由用户确认后提交，agent 不代发；OpenRA 不存评论。
   - [ ] Community 收录、Featured、Verified 分开显示；精选 ≠ 安全审计；合集变更不自动安装或启用。
   - [ ] 离线用缓存目录；趋势数据缺失/失败不影响安装与使用。
+
+
+## 7. Public Release Gate（用户 10-12，硬规则）
+
+- 本仓库**只放 OpenRA Public Contract 之上的可下载/适配资产**（条目元数据、schema、第三方或社区 skill/扩展的公开内容与发行包索引、校验脚本、CI）。**不得包含 OpenRA 核心逻辑**：不复制 OpenRA 源码、内部模块路径、内部 HTTP 路由、宿主 token 名、未公开的数据结构。
+- 条目与 schema 只能引用 OpenRA `docs/public-contract.md` 中列出的稳定字段与接口（由 G+A 维护，尽量小）；需要新接口时向 OpenRA 提最小公共契约变更，不在本仓自定义宿主行为。
+- 每个合入 main 的分支都要过 Review 的 Public Release Gate：路径白名单、与 OpenRA 源文件逐字节比对、内部标识/密钥扫描、无符号链接/大文件、CI 只读且 action 固定 SHA、无 `pull_request_target`。不通过不合入。
+- 本 `todo` 分支同样公开可见：不要写 OpenRA 内部文件路径或实现细节，只引用公共文档名。
