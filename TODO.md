@@ -82,3 +82,12 @@
   - [ ] MCP/CLI 使用已有 adapter 实测 transport 与 tools，纯浏览不启动不可信服务；通用工具表单复用 G 已合的 MCP generic tools 宿主表单。
   - [ ] 测试：`openra.mcp-echo` 从目录→批准→固定安装→项目内调用→结果可 @→升级→回滚；目录离线时已装能力可用。
 - 不碰：契约定义与 Hub UI（G+D）、registry 客户端（X）、安装内核（C）。
+
+## 6. HUB-11 Community, Credits & Discovery（后续里程碑 SY-M4；规格 OpenRA `docs/hub-community-discovery.md`）
+
+**SY-00 起就预留署名字段**：entry.json 公共核心与 X 仓同名同义——`authors[]`{name,github}、`maintainers[]`、`contributors[]`、`adapters[]`、`registrySubmitter`、`categories[]`。社区数据（creators/featured/collections/discovery）**只在 X 仓 `community/`**，本仓不复制。
+- **SY-M4（HUB-M1 通过后）— OpenRA 侧展示（`agent-y/hub-community-ui`）**
+  - [ ] 在 **G 的 Hub 页容器**内实现：条目详情的作者/维护者/贡献者/适配者区（可跳 GitHub）、按作者查看其公开条目、首页 Featured / New / Recently Updated / Trending（Trending 标注数据来源与窗口）、Collections 浏览。G 审契约，D 审布局。
+  - [ ] 反馈与贡献按钮：View Source / Report Issue / Suggest Improvement / Contribute——打开对应 GitHub Issue/Discussion/PR 模板，由用户确认后提交，agent 不代发；OpenRA 不存评论。
+  - [ ] Community 收录、Featured、Verified 分开显示；精选 ≠ 安全审计；合集变更不自动安装或启用。
+  - [ ] 离线用缓存目录；趋势数据缺失/失败不影响安装与使用。
