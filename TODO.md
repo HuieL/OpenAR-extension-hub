@@ -72,3 +72,13 @@
 - 每个分支：validate 输出、条目数、是否改 schema（改则写 schemaVersion 与对 C/X/G 的影响）。
 - 回报写在 OpenRA 主仓 TODO 的 Y 行（分支@SHA + 一句结论）；本仓 main 不写回执。
 - 规模：每分支新增手写文件 ≤5、修改 ≤10，每分支 ≤4 个新条目。
+
+## 5. OpenRA 主仓上的底座工作（用户 10-12：X/Y 在 OpenRA 分支写入底座以无缝集成）
+
+- 在 OpenRA 只推 `agent-y/<topic>` 分支；Review 审查，Rust 改动进 Mac 门禁 train 后合入。派工以 OpenRA `TODO.md` 的 Y 行为准。
+- **HUB-05 条目 → ExtensionDefinition 安装/binding（Y 负责）**：
+  - [ ] 使用 X 的 HUB-01 registry 客户端读条目（不另写客户端）；把 `package`/`mcp-local`/`cli` 条目映射为 G 的 ExtensionDefinition + 已登记 binding，经 C 的 `acquire::extension`/`market` + ChangeSet 安装（改 `acquire/*`、`changesets.rs` 需 C 共审）。
+  - [ ] `bundled` 条目只做启用/配置映射，不下载；`mcp-remote` 只登记连接，不伪装已安装。
+  - [ ] MCP/CLI 使用已有 adapter 实测 transport 与 tools，纯浏览不启动不可信服务；通用工具表单复用 G 已合的 MCP generic tools 宿主表单。
+  - [ ] 测试：`openra.mcp-echo` 从目录→批准→固定安装→项目内调用→结果可 @→升级→回滚；目录离线时已装能力可用。
+- 不碰：契约定义与 Hub UI（G+D）、registry 客户端（X）、安装内核（C）。
