@@ -4,15 +4,20 @@
 Mirrors the OpenRA wire contract documented as
 docs/extension-hub-entry-format.md in the OpenRA repository: the hub must
 accept exactly what the OpenRA validator accepts. Aligned with the runtime
-contract direction: HTTPS URLs reject userinfo and loopback/private/metadata
-hosts, mcp-local command words carry the runtime argv charset (1-32 words,
-entry word names a path inside the package tree), env references use the
-runtime field name and bounds, and entries carry the shared credit fields
-(authors required; maintainers, contributors, adapters, registrySubmitter,
-categories). Zero dependencies beyond the Python standard library; CI runs
-exactly this script with no secrets and no install step.
+contract: HTTPS URLs reject userinfo, loopback/private/link-local and cloud
+metadata hosts (169.254.0.0/16, 100.100.100.200, fd00:ec2::/32) and
+single-label domains; mcp-local command words carry the runtime argv charset
+(1-32 words, entry word names a path inside the package tree) and never an
+inline = value; ids use the runtime definition-id grammar (underscore
+allowed); cli adapter/version and mcp tool/version use the runtime
+identifier and plain-word charsets; env references use the runtime field
+name and bounds; entries carry the shared credit fields (authors required;
+maintainers, contributors, adapters, registrySubmitter, categories). Zero
+dependencies beyond the Python standard library; CI runs exactly this script
+with no secrets and no install step.
 """
 
+import ipaddress
 import json
 import pathlib
 import re
@@ -33,10 +38,17 @@ PLATFORMS = {"macos", "linux", "windows"}
 BINDING_KINDS = {"builtin", "cli", "mcp"}
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
-NAMESPACED_ID = re.compile(r"^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$")
+# Runtime definition-id grammar: dot-separated segments of [a-z0-9_-],
+# no uppercase, each at most 64 chars, at least two segments.
+NAMESPACED_ID = re.compile(r"^[a-z0-9_-]+(\.[a-z0-9_-]+)+$")
 # Runtime argv-word charset: shell-free,
 # no absolute paths, no parent-directory components.
 ARGV_WORD = re.compile(r"^[A-Za-z0-9_./=:-]+$")
+# Runtime identifier (cli adapter/version): [A-Za-z0-9_-], at most 64.
+IDENTIFIER = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
+# Runtime plain word (tool names, server versions): no separators that
+# could smuggle a path or shell syntax.
+PLAIN_WORD = re.compile(r"^[A-Za-z0-9_.:-]{1,64}$")
 
 
 def argv_word(value) -> bool:
@@ -47,9 +59,12 @@ def argv_word(value) -> bool:
     if value.startswith("/"):
         return False
     return all(part not in ("", "..") for part in value.split("/"))
-LOOPBACK_OR_PRIVATE_HOST = re.compile(
-    r"^https://(?:[^/@\s]+@)?"  # userinfo (rejected below)
-)
+
+# Cloud metadata ranges the runtime harness refuses (169.254.0.0/16,
+# 100.100.100.200, fd00:ec2::/32), kept in step with harness/mcp.rs.
+METADATA_V4_NETWORKS = [ipaddress.ip_network("169.254.0.0/16")]
+METADATA_V4_HOSTS = [ipaddress.ip_address("100.100.100.200")]
+METADATA_V6_NETWORKS = [ipaddress.ip_network("fd00:ec2::/32")]
 
 GITHUB_LOGIN = re.compile(r"^[A-Za-z0-9-]{1,39}$")
 ENV_NAME = re.compile(r"^[A-Za-z0-9_]+$")
@@ -78,7 +93,9 @@ def bounded(value, max_len: int) -> bool:
 
 
 def namespaced_id(value) -> bool:
-    return isinstance(value, str) and len(value) <= 128 and bool(NAMESPACED_ID.match(value))
+    return (isinstance(value, str) and len(value) <= 128
+            and bool(NAMESPACED_ID.match(value))
+            and all(len(segment) <= 64 for segment in value.split(".")))
 
 
 def safe_rel_path(raw) -> bool:
@@ -99,18 +116,22 @@ def https_url(value) -> bool:
     host = rest.split("/", 1)[0].split("?", 1)[0].split("#", 1)[0]
     if "@" in host:  # userinfo never rides a catalog URL
         return False
-    host_name = host.split(":", 1)[0].lower()
-    if host_name in ("localhost",) or host_name.endswith(".localhost"):
-        return False
-    if host_name.endswith(".local") or host_name.endswith(".internal"):
-        return False
-    if re.match(r"^(127\.|10\.|192\.168\.|169\.254\.|0\.)", host_name):
-        return False
-    if re.match(r"^172\.(1[6-9]|2[0-9]|3[01])\.", host_name):
-        return False
-    if re.match(r"^\[?::1\]?$", host_name):
-        return False
-    return True
+    if host.startswith("[") and host.endswith("]"):  # IPv6 literal
+        host_name = host[1:-1]
+    else:
+        host_name = host.split(":", 1)[0].lower()
+    try:
+        address = ipaddress.ip_address(host_name)
+    except ValueError:
+        # Domain: public names have a dot and no local/internal suffix.
+        return "." in host_name and not host_name.endswith((".local", ".internal"))
+    if address.version == 4:
+        return not (address.is_private or address.is_loopback
+                    or address.is_link_local or address.is_unspecified
+                    or any(address in net for net in METADATA_V4_NETWORKS)
+                    or address in METADATA_V4_HOSTS)
+    return not (address.is_loopback or address.is_unspecified
+                or any(address in net for net in METADATA_V6_NETWORKS))
 
 
 def observed_at_timestamp(value) -> bool:
@@ -297,19 +318,20 @@ def check_bindings(entry: dict, entry_id: str) -> None:
         elif kind == "cli":
             if set(binding) != {"kind", "adapter", "version", "hash"}:
                 fail(entry_id, "cli binding carries exactly kind, adapter, version, hash")
-            elif (not bounded(binding.get("adapter"), 64) or not bounded(binding.get("version"), 64)
+            elif (not isinstance(binding.get("adapter"), str) or not IDENTIFIER.match(binding["adapter"])
+                  or not isinstance(binding.get("version"), str) or not IDENTIFIER.match(binding["version"])
                   or binding.get("version") in ("active", "latest", "unpinned")
                   or not isinstance(binding.get("hash"), str) or not HEX64.match(binding["hash"])):
-                fail(entry_id, "cli binding must pin adapter, version (never active/latest/unpinned) and a sha256 hash")
+                fail(entry_id, "cli binding must pin adapter, version (identifiers, never active/latest/unpinned) and a sha256 hash")
         else:
             allowed = {"kind", "tool", "inputSchemaDigest", "outputSchemaDigest"}
             required = {"kind", "tool", "inputSchemaDigest"}
             if set(binding) - allowed or not required <= set(binding):
                 fail(entry_id, "mcp binding carries kind, tool, inputSchemaDigest, optional outputSchemaDigest")
-            elif (not bounded(binding.get("tool"), 64)
+            elif (not isinstance(binding.get("tool"), str) or not PLAIN_WORD.match(binding["tool"])
                   or not isinstance(binding.get("inputSchemaDigest"), str)
                   or not HEX64.match(binding["inputSchemaDigest"])):
-                fail(entry_id, "mcp binding tool and inputSchemaDigest (64-hex) are required")
+                fail(entry_id, "mcp binding tool (plain word) and inputSchemaDigest (64-hex) are required")
             elif "outputSchemaDigest" in binding and binding["outputSchemaDigest"] is not None:
                 if not isinstance(binding["outputSchemaDigest"], str) or not HEX64.match(binding["outputSchemaDigest"]):
                     fail(entry_id, "mcp binding outputSchemaDigest must be 64-hex")
@@ -361,10 +383,13 @@ def check_mcp(entry: dict, entry_id: str) -> None:
                 or any(not argv_word(word) for word in command)):
             fail(entry_id, "mcp-local command must be 1-32 argv words in the runtime charset (no shell metacharacters)")
             return
+        if any("=" in word for word in command):
+            fail(entry_id, "mcp-local command must not carry inline = values; configuration arrives by env reference")
+            return
         if not safe_rel_path(command[0]) or "/" not in command[0]:
             fail(entry_id, "mcp-local command[0] must be a path inside the package tree, never a host binary or shell")
-        if not bounded(spec.get("version"), 64):
-            fail(entry_id, "mcp-local version must be a non-empty string of at most 64 chars")
+        if not isinstance(spec.get("version"), str) or not PLAIN_WORD.match(spec["version"]):
+            fail(entry_id, "mcp-local version must be a plain word (at most 64 chars, no separators)")
         env_refs = spec.get("env", [])
         if not isinstance(env_refs, list) or len(env_refs) > 32:
             fail(entry_id, "mcp-local env carries at most 32 name-to-credential references")

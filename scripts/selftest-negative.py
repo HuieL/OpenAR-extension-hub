@@ -186,12 +186,60 @@ def _(e):
     e["registrySubmitter"] = "@example-author"
 
 
+@case("inline = value in a command word")
+def _(e):
+    e["mcp"]["command"] = ["bin/echo-server", "--token=sk-live-123"]
+
+
+@case("asset url on an alibaba metadata host")
+def _(e):
+    e["assets"][0]["url"] = "https://100.100.100.200/latest/meta-data/echo.tar.gz"
+
+
+@case("asset url on an aws ipv6 metadata host")
+def _(e):
+    e["assets"][0]["url"] = "https://[fd00:ec2::254]/latest/meta-data/echo.tar.gz"
+
+
+@case("asset url on a single-label domain")
+def _(e):
+    e["assets"][0]["url"] = "https://intranet/echo.tar.gz"
+
+
+@case("cli binding adapter outside the identifier charset")
+def _(e):
+    e["bindings"] = [
+        {"kind": "cli", "adapter": "ripgrep adapter", "version": "14.1.0", "hash": HEX64}
+    ]
+
+
+@case("mcp binding tool outside the plain-word charset")
+def _(e):
+    e["bindings"] = [
+        {"kind": "mcp", "tool": "echo tool", "inputSchemaDigest": HEX64}
+    ]
+
+
+@case("mcp-local version outside the plain-word charset")
+def _(e):
+    e["mcp"]["version"] = "0.1.0 (nightly)"
+
+
 def main() -> None:
     # The unmutated fixture must pass every check.
     clean = run_checks(base_entry())
     if clean:
         print("FAIL: base entry does not validate cleanly:")
         print("\n".join(clean))
+        sys.exit(1)
+
+    # The runtime definition-id grammar allows underscores in segments.
+    underscored = base_entry()
+    underscored["id"] = "example.mcp_echo"
+    errors = run_checks(underscored)
+    if errors:
+        print("FAIL: underscore id segment must be accepted:")
+        print("\n".join(errors))
         sys.exit(1)
 
     failures = 0

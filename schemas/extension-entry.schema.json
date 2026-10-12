@@ -26,9 +26,9 @@
     },
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+$",
+      "pattern": "^[a-z0-9_-]+(\\.[a-z0-9_-]+)+$",
       "maxLength": 128,
-      "description": "Namespaced identity, e.g. openra.calendar. Lowercase, at least two dot-separated segments; equal to the directory name; globally unique; never reused. openra.* is first-party."
+      "description": "Namespaced identity, e.g. openra.calendar. Lowercase segments of [a-z0-9_-] (each at most 64 chars), at least two; equal to the directory name; globally unique; never reused. openra.* is first-party."
     },
     "kind": {
       "const": "extension"
@@ -358,13 +358,11 @@
               },
               "adapter": {
                 "type": "string",
-                "minLength": 1,
-                "maxLength": 64
+                "pattern": "^[A-Za-z0-9_-]{1,64}$"
               },
               "version": {
                 "type": "string",
-                "minLength": 1,
-                "maxLength": 64,
+                "pattern": "^[A-Za-z0-9_-]{1,64}$",
                 "not": {
                   "enum": [
                     "active",
@@ -394,8 +392,7 @@
               },
               "tool": {
                 "type": "string",
-                "minLength": 1,
-                "maxLength": 64
+                "pattern": "^[A-Za-z0-9_.:-]{1,64}$"
               },
               "inputSchemaDigest": {
                 "type": "string",
@@ -452,7 +449,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+$"
+            "pattern": "^[a-z0-9_-]+(\\.[a-z0-9_-]+)+$"
           },
           "version": {
             "type": [
@@ -521,17 +518,17 @@
               "type": "array",
               "minItems": 1,
               "maxItems": 32,
-              "description": "argv words in the runtime charset (no shell metacharacters); command[0] is a path inside the package tree, never a host binary or shell.",
+              "description": "argv words in the runtime charset (no shell metacharacters, never an inline = value; configuration arrives by env reference); command[0] is a path inside the package tree, never a host binary or shell.",
               "items": {
                 "type": "string",
                 "minLength": 1,
-                "maxLength": 512
+                "maxLength": 512,
+                "pattern": "^[^=]+$"
               }
             },
             "version": {
               "type": "string",
-              "minLength": 1,
-              "maxLength": 64
+              "pattern": "^[A-Za-z0-9_.:-]{1,64}$"
             },
             "env": {
               "type": "array",
@@ -546,8 +543,7 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "minLength": 1,
-                    "maxLength": 64
+                    "pattern": "^[A-Za-z0-9_]{1,64}$"
                   },
                   "credentialRef": {
                     "type": "string",
