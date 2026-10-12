@@ -19,7 +19,7 @@
 
 ## 1. 当前事实（2026-10-12）
 
-- 本仓库目前只有一个分支 `agent-k/notes-bundled-facts`（K 的证据交接，**HOLD**：证据不进 hub）。因仓库曾为空，GitHub 暂把它当默认分支；`main` 建立后由用户把默认分支设为 `main`，该分支由 Review 归档删除。
+- `main` 已建立（f78bcf7：README+MIT LICENSE，2026-10-12 推送）；GitHub 默认分支仍指向 `agent-k/notes-bundled-facts`（K 的证据交接，**HOLD**：证据不进 hub），待用户把默认分支设为 `main` 后由 Review 归档删除该分支。
 - OpenRA 已适配并随 App 编译的扩展（`delivery: bundled`，代码随 App 更新，不可单独安装）：`openra.calendar`、`openra.deadlines`、`openra.scratchpad`（Notes）、`openra.craft-suite`、`openra.daily-picks`、`openra.survey`、`openra.paper-reviewer`。`openra.skill-hub` 是宿主内置管理入口，**不作为条目**。`openra.tool` 是 E18 用户自带工具样例（可作为"独立包"示例的来源）。
 - HUB-M1 的 MCP 测试对象：OpenRA 验收用的 stdio echo 本地 MCP server（无自定义 UI 的工具集成）。
 - C 的 registry 客户端（HUB-01）尚未实现；它将按 commit SHA 读取本仓 `extensions.json` 并逐条校验 sha256。
@@ -55,6 +55,7 @@
 - [ ] `extensions.json` 投影 + validate（与 X 相同规则：一致性、唯一 id、无未知字段、哈希、路径安全、大小上限）。
 - [ ] CI 同 X：只读、无 secrets、不执行 PR 代码，action 固定到 SHA。
 - 交付：分支 `agent-y/skeleton` → Review 合入成为 `main`。
+- 回执（2026-10-12，`agent-y/skeleton@550264e`，基 `main@f78bcf7`）：6 个新文件——`schemas/extension-entry.schema.json`（draft-07，镜像 OpenRA `extension_hub_registry.rs` 契约）、`scripts/build_index.py`（生成 extensions.json，`--check` 供 CI）、`scripts/validate.py`（与 Rust 校验同规则：字节长度上限、命名空间 id 段规则、40/64 位小写 hex、路径安全、delivery⇔assets/mcp 一致性、索引新鲜度）、`.github/workflows/validate.yml`（只读、checkout 固定 SHA、无 secrets）、`CONTRIBUTING.md`、空 `extensions.json`。本地验证：`build_index.py`/`validate.py`/`--check` 全过；负例演练（http repo + `..` 路径 + 分支 revision + package 缺 assets）被正确拒绝；正例演练（合法 bundled 条目）通过后已移除。未改 schema 之外任何契约；勾选由 Review 依据本回执执行。
 
 ### SY-01 首批条目（NEXT）
 - [ ] `openra.mcp-echo`（`delivery: mcp-local`，`integration: L0`）：来源为 OpenRA 验收用 echo fixture 的公开版本（只放 manifest 与公开资产，不复制 OpenRA 源码）；这是 HUB-M1 的端到端测试对象。
