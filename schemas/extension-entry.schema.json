@@ -1,0 +1,564 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HuieL/OpenAR-extension-hub/schemas/extension-entry.schema.json",
+  "title": "OpenAR Extension Hub entry",
+  "description": "One directory record per extension under entries/extensions/<id>/entry.json. scripts/validate.py is the authoritative checker for CI; this schema documents the same wire contract as the OpenRA registry client (docs/extension-hub-entry-format.md in the OpenRA repository).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "kind",
+    "name",
+    "summary",
+    "source",
+    "version",
+    "license",
+    "review",
+    "compat",
+    "delivery",
+    "integration"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+$",
+      "maxLength": 128,
+      "description": "Namespaced identity, e.g. openra.calendar. Lowercase, at least two dot-separated segments; equal to the directory name; globally unique; never reused. openra.* is first-party."
+    },
+    "kind": {
+      "const": "extension"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "One short English name, identical in every language."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "description": "English one-to-few-line description."
+    },
+    "i18n": {
+      "type": "object",
+      "additionalProperties": false,
+      "propertyNames": {
+        "enum": [
+          "en",
+          "zh-CN",
+          "ja",
+          "ko",
+          "es"
+        ]
+      },
+      "description": "Optional localized summaries (keys are locales); summaries only, never the name.",
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "zh-CN": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "ja": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "ko": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "es": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repo",
+        "path",
+        "revision"
+      ],
+      "properties": {
+        "repo": {
+          "type": "string",
+          "description": "Public HTTPS URL of the source repository. No userinfo, no loopback/private/metadata hosts."
+        },
+        "path": {
+          "type": "string",
+          "description": "Subdirectory of the extension inside the repo. Use \".\" for the repo root. Never installs a whole repository implicitly."
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "Exact 40-hex commit SHA. main/latest/mutable tags are discovery hints only, never a pin."
+        }
+      }
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Upstream-reported version; the pinned revision identity when upstream reports none."
+    },
+    "license": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "SPDX identifier of the entry's license."
+    },
+    "licenseFile": {
+      "type": "string",
+      "description": "Safe relative path of the license text, when carried."
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "unreviewed",
+            "reviewed",
+            "deprecated",
+            "high-risk"
+          ]
+        },
+        "reviewedRevision": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$",
+          "description": "The exact revision the review covered. Required when status is reviewed; reviewing one revision never vouches for later ones."
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 128
+        }
+      }
+    },
+    "compat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minHost",
+        "hostApi",
+        "platforms"
+      ],
+      "properties": {
+        "minHost": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32,
+          "description": "Minimum OpenRA version."
+        },
+        "hostApi": {
+          "description": "Exact host API number or {min, max} range; same semantics as the extensions manifest.",
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "min",
+                "max"
+              ],
+              "properties": {
+                "min": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          ]
+        },
+        "platforms": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "macos",
+              "linux",
+              "windows"
+            ]
+          }
+        }
+      }
+    },
+    "delivery": {
+      "enum": [
+        "bundled",
+        "package",
+        "mcp-local",
+        "mcp-remote",
+        "cli"
+      ],
+      "description": "bundled: ships with the app, no assets, updates follow app releases. package/mcp-local/cli: installable, require assets. mcp-remote: a registered connection, never a fake binary install."
+    },
+    "integration": {
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "description": "Self-declared integration ceiling: L0 agent-callable no page, L1 host generic forms, L2 OpenRA UI contract, L3 sandboxed MCP Apps (post-M1). The host renders by its registered bindings, never by this declaration."
+    },
+    "capabilities": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "description": "Declared display tags only; not verified capability."
+    },
+    "uiContributions": {
+      "type": "array",
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "main-page",
+          "right-panel",
+          "commands",
+          "preview"
+        ]
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "maxItems": 16,
+      "description": "Catalog declarations mirroring the runtime binding shapes. A skill reference is a dependency, not a binding kind.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "id"
+            ],
+            "properties": {
+              "kind": {
+                "const": "builtin"
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "adapter",
+              "version",
+              "hash"
+            ],
+            "properties": {
+              "kind": {
+                "const": "cli"
+              },
+              "adapter": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "not": {
+                  "enum": [
+                    "active",
+                    "latest",
+                    "unpinned"
+                  ]
+                },
+                "description": "Pinned adapter version; never active/latest/unpinned."
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "tool",
+              "inputSchemaDigest"
+            ],
+            "properties": {
+              "kind": {
+                "const": "mcp"
+              },
+              "tool": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              },
+              "inputSchemaDigest": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "outputSchemaDigest": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "auth": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connections": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "description": "Connection type ids only; credentials never appear in an entry."
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "description": "Output types the extension produces."
+    },
+    "dependencies": {
+      "type": "array",
+      "maxItems": 8,
+      "description": "Explicit, bounded; no dependency solving.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)+$"
+          },
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "optional": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "description": "Required for package/mcp-local/cli deliveries, forbidden otherwise. One pinned artifact per platform.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "platform",
+          "url",
+          "sha256",
+          "bytes"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          },
+          "url": {
+            "type": "string",
+            "description": "Public HTTPS URL; no userinfo, no loopback/private hosts."
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 536870912
+          }
+        }
+      }
+    },
+    "mcp": {
+      "description": "Required for mcp-local/mcp-remote deliveries, forbidden otherwise.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "transport",
+            "command",
+            "version"
+          ],
+          "properties": {
+            "transport": {
+              "const": "stdio"
+            },
+            "command": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "description": "argv words in the runtime charset (no shell metacharacters); command[0] is a path inside the package tree, never a host binary or shell.",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "envRefs": {
+              "type": "array",
+              "maxItems": 16,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "credentialRef"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "credentialRef": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "endpoint",
+            "observed"
+          ],
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "description": "Public HTTPS endpoint."
+            },
+            "authRequirements": {
+              "type": "array",
+              "maxItems": 8,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              }
+            },
+            "observed": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "observedAt"
+              ],
+              "properties": {
+                "tools": {
+                  "type": "array",
+                  "maxItems": 64,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "resources": {
+                  "type": "array",
+                  "maxItems": 64,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                },
+                "observedAt": {
+                  "type": "string",
+                  "description": "ISO-8601 date-time. An observation, not a promise the endpoint stays unchanged."
+                },
+                "serverVersion": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1,
+                  "maxLength": 64
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
