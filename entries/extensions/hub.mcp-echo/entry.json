@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "id": "hub.mcp-echo",
+  "kind": "extension",
+  "name": "MCP Echo",
+  "summary": "Minimal local stdio MCP server exposing one echo tool; the reference end-to-end install target for the OpenRA extension hub.",
+  "i18n": {
+    "zh-CN": "极简本地 stdio MCP 服务器，仅提供一个 echo 工具；OpenRA 扩展中心的端到端安装参考对象。",
+    "ja": "echo ツールひとつだけを提供する最小のローカル stdio MCP サーバー。OpenRA 拡張ハブのエンドツーエンド・インストールの参照対象。",
+    "ko": "echo 도구 하나만 제공하는 최소 로컬 stdio MCP 서버. OpenRA 확장 허브의 엔드투엔드 설치 참조 대상.",
+    "es": "Servidor MCP stdio local mínimo con una sola herramienta de eco; objetivo de referencia para la instalación de extremo a extremo del hub de extensiones de OpenRA."
+  },
+  "authors": [
+    {"name": "HuieL", "github": "HuieL"}
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": ["mcp"],
+  "source": {
+    "repo": "https://github.com/HuieL/OpenAR-extension-hub",
+    "path": "entries/extensions/hub.mcp-echo/package",
+    "revision": "3fe5d5dfe800c2bcb5949d21eee0e932f56ffbe5"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "review": {"status": "unreviewed"},
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": ["macos", "linux"]
+  },
+  "delivery": "mcp-local",
+  "integration": "L0",
+  "capabilities": [],
+  "uiContributions": [],
+  "bindings": [
+    {
+      "kind": "mcp",
+      "tool": "echo",
+      "inputSchemaDigest": "54669b5e6a1bfebb4d15788d41b5cd5fb8e51fc2d982eb2383a42262c748c90a",
+      "outputSchemaDigest": "d95b00b27ca2bbbe11efb4ebcf3e4ee4d61036c801831bccac81b321af6737e5"
+    }
+  ],
+  "assets": [
+    {
+      "platform": "macos",
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/3fe5d5dfe800c2bcb5949d21eee0e932f56ffbe5/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.0.zip",
+      "sha256": "5be23d8a3599c350628b8ea65eb1ea2e19394eb1d9443a5ca462a204635facbb",
+      "bytes": 2652
+    },
+    {
+      "platform": "linux",
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/3fe5d5dfe800c2bcb5949d21eee0e932f56ffbe5/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.0.zip",
+      "sha256": "5be23d8a3599c350628b8ea65eb1ea2e19394eb1d9443a5ca462a204635facbb",
+      "bytes": 2652
+    }
+  ],
+  "mcp": {
+    "transport": "stdio",
+    "command": ["server/echo.py"],
+    "version": "1.0.0",
+    "env": []
+  }
+}
