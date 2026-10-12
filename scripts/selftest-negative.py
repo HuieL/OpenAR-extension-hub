@@ -27,6 +27,7 @@ def base_entry() -> dict:
         "kind": "extension",
         "name": "Echo MCP",
         "summary": "Local stdio echo MCP fixture.",
+        "authors": [{"name": "Example Author", "github": "example-author"}],
         "source": {
             "repo": "https://github.com/example/echo-mcp",
             "path": ".",
@@ -57,7 +58,7 @@ def base_entry() -> dict:
             "transport": "stdio",
             "command": ["bin/echo-server", "--port", "8080"],
             "version": "0.1.0",
-            "envRefs": [],
+            "env": [],
         },
     }
 
@@ -155,6 +156,34 @@ def _(e):
 @case("reviewed status without reviewedRevision")
 def _(e):
     e["review"] = {"status": "reviewed"}
+
+
+@case("missing authors")
+def _(e):
+    del e["authors"]
+
+
+@case("empty authors list")
+def _(e):
+    e["authors"] = []
+
+
+@case("env name outside the [A-Za-z0-9_] charset")
+def _(e):
+    e["mcp"]["env"] = [{"name": "API-KEY", "credentialRef": "echo/api-key"}]
+
+
+@case("duplicate env names")
+def _(e):
+    e["mcp"]["env"] = [
+        {"name": "API_KEY", "credentialRef": "echo/api-key"},
+        {"name": "API_KEY", "credentialRef": "echo/other"},
+    ]
+
+
+@case("registrySubmitter with an @ prefix")
+def _(e):
+    e["registrySubmitter"] = "@example-author"
 
 
 def main() -> None:

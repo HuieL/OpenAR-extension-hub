@@ -3,12 +3,14 @@
 
 Mirrors the OpenRA wire contract documented as
 docs/extension-hub-entry-format.md in the OpenRA repository: the hub must
-accept exactly what the OpenRA validator accepts. Two rules are stricter here
-than the first wire draft, matching the agreed contract direction: HTTPS URLs
-reject userinfo and loopback/private/metadata hosts, and mcp-local command
-words carry the runtime argv charset. Zero dependencies beyond the Python
-standard library; CI runs exactly this script with no secrets and no install
-step.
+accept exactly what the OpenRA validator accepts. Aligned with the runtime
+contract direction: HTTPS URLs reject userinfo and loopback/private/metadata
+hosts, mcp-local command words carry the runtime argv charset (1-32 words,
+entry word names a path inside the package tree), env references use the
+runtime field name and bounds, and entries carry the shared credit fields
+(authors required; maintainers, contributors, adapters, registrySubmitter,
+categories). Zero dependencies beyond the Python standard library; CI runs
+exactly this script with no secrets and no install step.
 """
 
 import json
@@ -38,7 +40,7 @@ ARGV_WORD = re.compile(r"^[A-Za-z0-9_./=:-]+$")
 
 
 def argv_word(value) -> bool:
-    if not isinstance(value, str) or not value or len(value) > 512:
+    if not isinstance(value, str) or not value or len(value) > 128:
         return False
     if not ARGV_WORD.match(value):
         return False
@@ -49,11 +51,15 @@ LOOPBACK_OR_PRIVATE_HOST = re.compile(
     r"^https://(?:[^/@\s]+@)?"  # userinfo (rejected below)
 )
 
+GITHUB_LOGIN = re.compile(r"^[A-Za-z0-9-]{1,39}$")
+ENV_NAME = re.compile(r"^[A-Za-z0-9_]+$")
+
 ENTRY_FIELDS = {
-    "schemaVersion", "id", "kind", "name", "summary", "i18n", "source",
-    "version", "license", "licenseFile", "review", "compat", "delivery",
-    "integration", "capabilities", "uiContributions", "bindings", "auth",
-    "artifacts", "dependencies", "assets", "mcp",
+    "schemaVersion", "id", "kind", "name", "summary", "authors", "i18n",
+    "source", "version", "license", "licenseFile", "review", "compat",
+    "delivery", "integration", "capabilities", "uiContributions", "bindings",
+    "auth", "artifacts", "dependencies", "assets", "mcp", "maintainers",
+    "contributors", "adapters", "registrySubmitter", "categories",
 }
 INDEX_ENTRY_FIELDS = {
     "id", "name", "summary", "delivery", "integration", "version",
@@ -129,8 +135,8 @@ def check_common(entry: dict, entry_id: str) -> bool:
     if unknown:
         fail(entry_id, f"unknown fields: {sorted(unknown)}")
     missing = {
-        "schemaVersion", "id", "kind", "name", "summary", "source", "version",
-        "license", "review", "compat", "delivery", "integration",
+        "schemaVersion", "id", "kind", "name", "summary", "authors", "source",
+        "version", "license", "review", "compat", "delivery", "integration",
     } - set(entry)
     if missing:
         fail(entry_id, f"missing fields: {sorted(missing)}")
@@ -145,6 +151,29 @@ def check_common(entry: dict, entry_id: str) -> bool:
         fail(entry_id, "name must be a non-empty string of at most 64 chars")
     if not bounded(entry["summary"], 512):
         fail(entry_id, "summary must be a non-empty string of at most 512 chars")
+    authors = entry.get("authors")
+    if not isinstance(authors, list) or not authors:
+        fail(entry_id, "authors must name at least the original creator(s)")
+    else:
+        for author in authors:
+            if (not isinstance(author, dict) or set(author) - {"name", "github"}
+                    or not bounded(author.get("name"), 64)):
+                fail(entry_id, "each author has a name (at most 64 chars) and an optional github login")
+            elif "github" in author and author["github"] is not None and not (
+                    isinstance(author["github"], str) and GITHUB_LOGIN.match(author["github"])):
+                fail(entry_id, "author github must be a login without '@'")
+    for field in ("maintainers", "contributors", "adapters"):
+        logins = entry.get(field, [])
+        if not isinstance(logins, list) or any(
+                not isinstance(login, str) or not GITHUB_LOGIN.match(login) for login in logins):
+            fail(entry_id, f"{field} are github logins without '@'")
+    submitter = entry.get("registrySubmitter")
+    if submitter is not None and not (isinstance(submitter, str) and GITHUB_LOGIN.match(submitter)):
+        fail(entry_id, "registrySubmitter must be a github login without '@'")
+    categories = entry.get("categories", [])
+    if not isinstance(categories, list) or any(
+            not isinstance(category, str) or not 0 < len(category) <= 32 for category in categories):
+        fail(entry_id, "categories are coarse tags of at most 32 chars")
     if "i18n" in entry:
         i18n = entry["i18n"]
         if not isinstance(i18n, dict) or set(i18n) - LOCALES or len(i18n) > len(LOCALES):
@@ -322,26 +351,36 @@ def check_mcp(entry: dict, entry_id: str) -> None:
         fail(entry_id, "mcp deliveries must declare their matching mcp spec")
         return
     if delivery == "mcp-local":
-        if set(spec) != {"transport", "command", "version", "envRefs"}:
-            fail(entry_id, "mcp-local spec has exactly transport, command, version, envRefs")
+        if set(spec) != {"transport", "command", "version", "env"}:
+            fail(entry_id, "mcp-local spec has exactly transport, command, version, env")
             return
         if spec.get("transport") != "stdio":
             fail(entry_id, "mcp-local transport must be stdio")
         command = spec.get("command")
-        if (not isinstance(command, list) or not command or len(command) > 16
+        if (not isinstance(command, list) or not command or len(command) > 32
                 or any(not argv_word(word) for word in command)):
-            fail(entry_id, "mcp-local command must be 1-16 argv words in the runtime charset (no shell metacharacters)")
+            fail(entry_id, "mcp-local command must be 1-32 argv words in the runtime charset (no shell metacharacters)")
             return
         if not safe_rel_path(command[0]) or "/" not in command[0]:
             fail(entry_id, "mcp-local command[0] must be a path inside the package tree, never a host binary or shell")
         if not bounded(spec.get("version"), 64):
             fail(entry_id, "mcp-local version must be a non-empty string of at most 64 chars")
-        env_refs = spec.get("envRefs", [])
-        if (not isinstance(env_refs, list) or len(env_refs) > 16
-                or any(not isinstance(r, dict) or set(r) != {"name", "credentialRef"}
-                       or not bounded(r.get("name"), 64) or not bounded(r.get("credentialRef"), 128)
-                       for r in env_refs)):
-            fail(entry_id, "mcp-local envRefs name credential references: at most 16, never credentials themselves")
+        env_refs = spec.get("env", [])
+        if not isinstance(env_refs, list) or len(env_refs) > 32:
+            fail(entry_id, "mcp-local env carries at most 32 name-to-credential references")
+            return
+        names = set()
+        for reference in env_refs:
+            name = reference.get("name") if isinstance(reference, dict) else None
+            if (not isinstance(reference, dict) or set(reference) != {"name", "credentialRef"}
+                    or not isinstance(name, str) or not ENV_NAME.match(name) or len(name) > 64
+                    or not argv_word(reference.get("credentialRef"))):
+                fail(entry_id, "mcp-local env names are [A-Za-z0-9_] words and credentialRef an argv word, never a credential itself")
+                break
+            if name in names:
+                fail(entry_id, f"mcp-local env name {name!r} declared twice")
+                break
+            names.add(name)
     else:
         if set(spec) != {"endpoint", "authRequirements", "observed"}:
             fail(entry_id, "mcp-remote spec has exactly endpoint, authRequirements, observed")

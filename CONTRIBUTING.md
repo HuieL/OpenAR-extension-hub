@@ -17,6 +17,11 @@ account, and no install script to run here.
    `schemas/extension-entry.schema.json`. The required facts:
    - `id` — lowercase namespaced identity (e.g. `openra.calendar`), equal to
      the directory name, globally unique, never reused;
+   - `authors` — the original creator(s), credited from the source repo's
+     commits, license, or README. Adapting an extension for OpenRA is
+     recorded in `adapters`, submitting it in `registrySubmitter`; neither
+     grants authorship. `maintainers`, `contributors` and `categories` are
+     optional;
    - `source` — public HTTPS repo URL, the extension's subdirectory, and an
      exact 40-hex commit SHA. `main`/`latest`/mutable tags are never accepted
      as a pin;
