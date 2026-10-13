@@ -7,6 +7,11 @@ Browsing this catalog requires no account, and nothing here installs,
 authorizes or executes anything by itself.
 
 - Wire format: `docs/extension-hub-entry-format.md` in the OpenAR repository.
+- Public contract: `docs/public-contract.md` in the OpenAR repository,
+  pinned at commit `ff5848c5e108ac8675be94457a7dafb4abb4c804`. It defines
+  the publishable boundary and field meanings; this repository's schema and
+  validators are the kind-specific checkers, and a reference is not host
+  authorization.
 - Contributing: see `CONTRIBUTING.md` (metadata PRs only; developers host
   their own source and releases).
 - License: repository metadata and scripts are MIT (`LICENSE`); each entry
