@@ -55,7 +55,7 @@
 - [ ] `extensions.json` 投影 + validate（与 X 相同规则：一致性、唯一 id、无未知字段、哈希、路径安全、大小上限）。
 - [ ] CI 同 X：只读、无 secrets、不执行 PR 代码，action 固定到 SHA。
 - 交付：分支 `agent-y/skeleton` → Review 合入成为 `main`。
-- 回执（2026-10-12，`agent-y/skeleton@550264e`，基 `main@f78bcf7`）：6 个新文件——`schemas/extension-entry.schema.json`（draft-07，镜像 OpenRA `extension_hub_registry.rs` 契约）、`scripts/build_index.py`（生成 extensions.json，`--check` 供 CI）、`scripts/validate.py`（与 Rust 校验同规则：字节长度上限、命名空间 id 段规则、40/64 位小写 hex、路径安全、delivery⇔assets/mcp 一致性、索引新鲜度）、`.github/workflows/validate.yml`（只读、checkout 固定 SHA、无 secrets）、`CONTRIBUTING.md`、空 `extensions.json`。本地验证：`build_index.py`/`validate.py`/`--check` 全过；负例演练（http repo + `..` 路径 + 分支 revision + package 缺 assets）被正确拒绝；正例演练（合法 bundled 条目）通过后已移除。未改 schema 之外任何契约；勾选由 Review 依据本回执执行。
+- 回执（2026-10-12，`agent-y/skeleton@550264e`，基 `main@f78bcf7`）：6 个新文件——`schemas/extension-entry.schema.json`（draft-07，镜像 OpenRA 公共条目契约（docs/public-contract.md））、`scripts/build_index.py`（生成 extensions.json，`--check` 供 CI）、`scripts/validate.py`（与 Rust 校验同规则：字节长度上限、命名空间 id 段规则、40/64 位小写 hex、路径安全、delivery⇔assets/mcp 一致性、索引新鲜度）、`.github/workflows/validate.yml`（只读、checkout 固定 SHA、无 secrets）、`CONTRIBUTING.md`、空 `extensions.json`。本地验证：`build_index.py`/`validate.py`/`--check` 全过；负例演练（http repo + `..` 路径 + 分支 revision + package 缺 assets）被正确拒绝；正例演练（合法 bundled 条目）通过后已移除。未改 schema 之外任何契约；勾选由 Review 依据本回执执行。
 
 ### SY-01 首批条目（NOW）
 - [ ] `hub.mcp-echo`（`delivery: mcp-local`，`integration: L0`）：OpenRA 验收用 echo fixture 的公开版本（只放 manifest 与公开资产，不复制 OpenRA 源码）；HUB-M1 的端到端测试对象。
