@@ -11,23 +11,33 @@
     "es": "Servidor MCP stdio local mínimo con una sola herramienta de eco; objetivo de referencia para la instalación de extremo a extremo del hub de extensiones de OpenRA."
   },
   "authors": [
-    {"name": "HuieL", "github": "HuieL"}
+    {
+      "name": "HuieL",
+      "github": "HuieL"
+    }
   ],
   "registrySubmitter": "HuieL",
-  "categories": ["mcp"],
+  "categories": [
+    "mcp"
+  ],
   "source": {
     "repo": "https://github.com/HuieL/OpenAR-extension-hub",
     "path": "entries/extensions/hub.mcp-echo/package",
-    "revision": "d2f7bb408da8c6fd90ede401bb743851dea9ed00"
+    "revision": "76957d4585c52d8db9f38d55a89de8396c773d88"
   },
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "licenseFile": "LICENSE",
-  "review": {"status": "unreviewed"},
+  "review": {
+    "status": "unreviewed"
+  },
   "compat": {
     "minHost": "0.3.0",
     "hostApi": 1,
-    "platforms": ["macos", "linux"]
+    "platforms": [
+      "macos",
+      "linux"
+    ]
   },
   "delivery": "mcp-local",
   "integration": "L0",
@@ -44,21 +54,23 @@
   "assets": [
     {
       "platform": "macos",
-      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/d2f7bb408da8c6fd90ede401bb743851dea9ed00/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.1.zip",
-      "sha256": "e45bc8e4c883376e2a0d0ae3dcaee2d2891be3040efaa78ce0a19292d711a63a",
-      "bytes": 2670
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/76957d4585c52d8db9f38d55a89de8396c773d88/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.2.zip",
+      "sha256": "90c7a14f14cfe722358bac0e70b11da507557c1969ad0d7adf3daee1cb91d925",
+      "bytes": 2373
     },
     {
       "platform": "linux",
-      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/d2f7bb408da8c6fd90ede401bb743851dea9ed00/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.1.zip",
-      "sha256": "e45bc8e4c883376e2a0d0ae3dcaee2d2891be3040efaa78ce0a19292d711a63a",
-      "bytes": 2670
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/76957d4585c52d8db9f38d55a89de8396c773d88/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.2.zip",
+      "sha256": "90c7a14f14cfe722358bac0e70b11da507557c1969ad0d7adf3daee1cb91d925",
+      "bytes": 2373
     }
   ],
   "mcp": {
     "transport": "stdio",
-    "command": ["server/echo.py"],
-    "version": "1.0.1",
+    "command": [
+      "server/echo.py"
+    ],
+    "version": "1.0.2",
     "env": []
   }
 }
