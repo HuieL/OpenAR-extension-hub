@@ -60,6 +60,7 @@ verified.
 ## Updates and removal
 
 A new upstream revision is a new `source.revision` plus a new `assets`/`mcp`
-manifest; the index is regenerated in the same PR. Deprecated or high-risk
-entries keep their history — upstream deletion never silently removes a
+manifest; the index is regenerated in the same PR. Deprecation or a high-risk
+marking changes `review.status` with a reason in the PR — entries and history
+are never silently deleted, and upstream deletion never silently removes a
 catalog record.
