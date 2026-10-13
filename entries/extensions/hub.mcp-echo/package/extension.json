@@ -1,11 +1,11 @@
 {
   "id": "hub.mcp-echo",
   "title": "MCP Echo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "mcp",
   "mcpServer": {
     "command": ["server/echo.py"],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "env": [],
     "transport": "stdio"
   },
@@ -15,7 +15,6 @@
   "configSchema": {
     "type": "object",
     "properties": {},
-    "required": [],
     "additionalProperties": false
   },
   "capabilities": ["cli.invoke"],
@@ -37,7 +36,15 @@
       },
       "outputSchema": {
         "type": "object",
-        "properties": {"text": {"type": "string"}}
+        "properties": {
+          "echo": {
+            "type": "object",
+            "properties": {"text": {"type": "string"}},
+            "additionalProperties": false
+          }
+        },
+        "required": ["echo"],
+        "additionalProperties": false
       }
     }
   ]
