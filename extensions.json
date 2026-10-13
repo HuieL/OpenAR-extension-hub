@@ -4,13 +4,13 @@
     {
       "id": "hub.mcp-echo",
       "name": "MCP Echo",
-      "summary": "Minimal local stdio MCP server exposing one echo tool; the reference end-to-end install target for the OpenRA extension hub.",
+      "summary": "Minimal local stdio MCP server exposing one echo tool; the reference end-to-end install target for the OpenAR extension hub.",
       "delivery": "mcp-local",
       "integration": "L0",
       "version": "1.0.2",
       "revision": "76957d4585c52d8db9f38d55a89de8396c773d88",
       "entryPath": "entries/extensions/hub.mcp-echo/entry.json",
-      "entrySha256": "479e82bde31362b8e4cd7eab4bbec8e5b457ff1da07d972f10e86cd4cac8527f"
+      "entrySha256": "6404058f5c97de2639c4f351cd03e58905f8989422bae7286c65d100c51ed6a9"
     },
     {
       "id": "upstash.context7",

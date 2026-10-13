@@ -3,12 +3,12 @@
   "id": "hub.mcp-echo",
   "kind": "extension",
   "name": "MCP Echo",
-  "summary": "Minimal local stdio MCP server exposing one echo tool; the reference end-to-end install target for the OpenRA extension hub.",
+  "summary": "Minimal local stdio MCP server exposing one echo tool; the reference end-to-end install target for the OpenAR extension hub.",
   "i18n": {
-    "zh-CN": "极简本地 stdio MCP 服务器，仅提供一个 echo 工具；OpenRA 扩展中心的端到端安装参考对象。",
-    "ja": "echo ツールひとつだけを提供する最小のローカル stdio MCP サーバー。OpenRA 拡張ハブのエンドツーエンド・インストールの参照対象。",
-    "ko": "echo 도구 하나만 제공하는 최소 로컬 stdio MCP 서버. OpenRA 확장 허브의 엔드투엔드 설치 참조 대상.",
-    "es": "Servidor MCP stdio local mínimo con una sola herramienta de eco; objetivo de referencia para la instalación de extremo a extremo del hub de extensiones de OpenRA."
+    "zh-CN": "极简本地 stdio MCP 服务器，仅提供一个 echo 工具；OpenAR 扩展中心的端到端安装参考对象。",
+    "ja": "echo ツールひとつだけを提供する最小のローカル stdio MCP サーバー。OpenAR 拡張ハブのエンドツーエンド・インストールの参照対象。",
+    "ko": "echo 도구 하나만 제공하는 최소 로컬 stdio MCP 서버. OpenAR 확장 허브의 엔드투엔드 설치 참조 대상.",
+    "es": "Servidor MCP stdio local mínimo con una sola herramienta de eco; objetivo de referencia para la instalación de extremo a extremo del hub de extensiones de OpenAR."
   },
   "authors": [
     {
