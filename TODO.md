@@ -19,18 +19,18 @@
 
 ## 1. 当前事实（2026-10-12）
 
-- `main` 已建立（f78bcf7：README+MIT LICENSE，2026-10-12 推送）；GitHub 默认分支仍指向 `agent-k/notes-bundled-facts`（K 的证据交接，**HOLD**：证据不进 hub），待用户把默认分支设为 `main` 后由 Review 归档删除该分支。
-- OpenRA 已适配并随 App 编译的扩展（`delivery: bundled`，代码随 App 更新，不可单独安装）：`openra.calendar`、`openra.deadlines`、`openra.scratchpad`（Notes）、`openra.craft-suite`、`openra.daily-picks`、`openra.survey`、`openra.paper-reviewer`。`openra.skill-hub` 是宿主内置管理入口，**不作为条目**。`openra.tool` 是 E18 用户自带工具样例（可作为"独立包"示例的来源）。
-- HUB-M1 的 MCP 测试对象：OpenRA 验收用的 stdio echo 本地 MCP server（无自定义 UI 的工具集成）。
-- C 的 registry 客户端（HUB-01）尚未实现；它将按 commit SHA 读取本仓 `extensions.json` 并逐条校验 sha256。
+- `main` 已建立（f78bcf7：README+MIT LICENSE，2026-10-12 推送）；GitHub 默认分支已由用户设为 `main`（2026-10-12 确认）。
+- **用户裁定 2026-10-12：内置 extension 不上 hub**（与 skill-hub 同步）。随 App 编译的扩展留在 OpenRA（其目录从 `builtin:*` 显示），本仓不列 bundled 条目；`delivery` 枚举删 `bundled`（`agent-y/drop-bundled`）。原计划的 7 个 bundled 条目（calendar、deadlines、scratchpad、craft-suite、daily-picks、survey、paper-reviewer）全部取消。
+- HUB-M1 的 MCP 测试对象：`hub.mcp-echo`（OpenRA 验收用 stdio echo 本地 MCP server 的公开版本；原草案名 `openra.mcp-echo` 不可用——`openra.*` 保留给内置且被运行时 user-definition 解析拒绝）。
+- X 的 registry 客户端（HUB-01，`hub-refresh`）已 ACCEPT→train-15；它按 commit SHA 读取本仓 `extensions.json` 并逐条校验 sha256。
 
 ## 2. 里程碑
 
 | 里程碑 | 内容 | 通过条件 |
 | --- | --- | --- |
 | **SY-M0 骨架** | 目录、schema、索引生成与校验、CI、README/LICENSE、贡献说明 | Review 合入成为 `main`；校验本地与 CI 都过 |
-| **SY-M1 首批条目（HUB-M1 的 extension 半）** | 一个本地 MCP 集成（stdio echo）可安装；7 个 bundled 扩展只读登记 | C 的客户端固定 SHA 读到并校验；OpenRA 安装该 MCP、在项目中调用、结果可 @、升级、回滚（C/A/G 验收）；bundled 条目在 Hub 显示"随 App 更新" |
-| **SY-M2 可适配可贡献（HUB-M2）** | 一个已适配原生扩展的三栏条目（calendar）完整元数据；Craft Suite 组件分列；社区/私有来源说明 | 外部贡献样例从 PR 到合入走通；bundled 与独立包差异在条目与 Hub 中清楚 |
+| **SY-M1 首批条目（HUB-M1 的 extension 半）** | 一个本地 MCP 集成（stdio echo）可安装 | C 的客户端固定 SHA 读到并校验；OpenRA 安装该 MCP、在项目中调用、结果可 @、升级、回滚（C/A/G 验收） |
+| **SY-M2 可适配可贡献（HUB-M2）** | 一个 L2 三栏条目完整元数据（由首个第三方适配承担）；Craft Suite 组件分列；社区/私有来源说明 | 外部贡献样例从 PR 到合入走通；hub 托管与上游固定条目的差异在条目与 Hub 中清楚 |
 | **SY-M3 第三方富 UI（HUB-M3，后置）** | MCP Apps / 沙箱 UI 条目格式 | 先等 OpenRA 侧隔离与消息桥评审通过，再开放条目 |
 
 ## 3. 任务
@@ -57,14 +57,14 @@
 - 交付：分支 `agent-y/skeleton` → Review 合入成为 `main`。
 - 回执（2026-10-12，`agent-y/skeleton@550264e`，基 `main@f78bcf7`）：6 个新文件——`schemas/extension-entry.schema.json`（draft-07，镜像 OpenRA `extension_hub_registry.rs` 契约）、`scripts/build_index.py`（生成 extensions.json，`--check` 供 CI）、`scripts/validate.py`（与 Rust 校验同规则：字节长度上限、命名空间 id 段规则、40/64 位小写 hex、路径安全、delivery⇔assets/mcp 一致性、索引新鲜度）、`.github/workflows/validate.yml`（只读、checkout 固定 SHA、无 secrets）、`CONTRIBUTING.md`、空 `extensions.json`。本地验证：`build_index.py`/`validate.py`/`--check` 全过；负例演练（http repo + `..` 路径 + 分支 revision + package 缺 assets）被正确拒绝；正例演练（合法 bundled 条目）通过后已移除。未改 schema 之外任何契约；勾选由 Review 依据本回执执行。
 
-### SY-01 首批条目（NEXT）
-- [ ] `openra.mcp-echo`（`delivery: mcp-local`，`integration: L0`）：来源为 OpenRA 验收用 echo fixture 的公开版本（只放 manifest 与公开资产，不复制 OpenRA 源码）；这是 HUB-M1 的端到端测试对象。
-- [ ] 7 个 bundled 条目：calendar、deadlines、scratchpad(Notes)、craft-suite、daily-picks、survey、paper-reviewer——`delivery: bundled`，`integration` 按 OpenRA 实际实现填写（向各 owner 核实，不猜），`compat.minHost` = 首个包含它的 OpenRA 版本；不提供安装资产。
-- [ ] K 的 `agent-k/notes-bundled-facts` 只作为 scratchpad 条目的事实参考，证据本身不进本仓。
-- 交付：`agent-y/seed-mcp-echo`、`agent-y/seed-bundled`（每分支 ≤4 条）。
+### SY-01 首批条目（NOW）
+- [ ] `hub.mcp-echo`（`delivery: mcp-local`，`integration: L0`）：OpenRA 验收用 echo fixture 的公开版本（只放 manifest 与公开资产，不复制 OpenRA 源码）；HUB-M1 的端到端测试对象。
+- ~~7 个 bundled 条目~~：用户裁定 2026-10-12 取消（内置 extension 不上 hub）；`agent-k/notes-bundled-facts` 证据分支不再需要。
+- 交付：`agent-y/seed-mcp-echo`、`agent-y/drop-bundled`。
+- 回执（2026-10-12）：①`agent-y/drop-bundled@a0d4421`（基 `main@6ed1ba7`，4 文件）：schema/validator/CONTRIBUTING 删 `bundled` delivery，selftest 该例改为拒绝检查，`openra.*` 不再作 id 示例；validate/build-index --check/26 负例全过。②`agent-y/seed-mcp-echo@e1bf81d`（2 commits：包 `3fe5d5d` + 条目 `e1bf81d`）：`entries/extensions/hub.mcp-echo/package/`（extension.json manifest、server/echo.py 带 shebang+exec bit、MIT LICENSE、zip 资产 2652 B sha256 5be23d8a…）+ entry.json；资产 URL 为固定 revision 的 raw.githubusercontent 直链（运行时下载器拒绝重定向，GitHub release 302 不可用），已实测 200 直达、哈希相符；echo server 本地握手实测（initialize/tools list/echo/boom/unknown tool）；schema digest 与验收 fixture 一致（54669b5e…/d95b00b2…）；id 由 `openra.mcp-echo` 改名 `hub.mcp-echo`。validate/build-index --check/26 负例全过；勾选由 Review 依据本回执执行。
 
 ### SY-02 原生适配与贡献（LATER）
-- [ ] calendar 作为 HUB-M2 的三栏样例补全 `uiContributions`（与 G/D 核对）。
+- [ ] ~~calendar 作为 HUB-M2 的三栏样例~~（用户裁定取消：内置不上 hub）；三栏样例由首个 L2 第三方适配条目承担（与 G/D 核对）。
 - [ ] Craft Suite：一个 Suite 条目引用各组件（Photo/Vector/Deck/Print…），组件独立版本/平台；安装 Suite 不安装全部组件（与 H 核对）。
 - [ ] CONTRIBUTING：开发者自托管源码/发行包，向本仓提交元数据 PR；外部 MCP 可从官方 MCP Registry 只读导入元数据（须固定 revision 并实测能力）。
 - [ ] 弃用/高风险/下架流程同 X。
@@ -79,9 +79,9 @@
 - 在 OpenRA 只推 `agent-y/<topic>` 分支；Review 审查，Rust 改动进 Mac 门禁 train 后合入。派工以 OpenRA `TODO.md` 的 Y 行为准。
 - **HUB-05 条目 → ExtensionDefinition 安装/binding（Y 负责）**：
   - [ ] 使用 X 的 HUB-01 registry 客户端读条目（不另写客户端）；把 `package`/`mcp-local`/`cli` 条目映射为 G 的 ExtensionDefinition + 已登记 binding，经 C 的 OpenRA 安装内核 + ChangeSet 安装（改 OpenRA 安装内核需 C 共审）。
-  - [ ] `bundled` 条目只做启用/配置映射，不下载；`mcp-remote` 只登记连接，不伪装已安装。
+  - [ ] `mcp-remote` 只登记连接，不伪装已安装（bundled 已随用户裁定移除）。
   - [ ] MCP/CLI 使用已有 adapter 实测 transport 与 tools，纯浏览不启动不可信服务；通用工具表单复用 G 已合的 MCP generic tools 宿主表单。
-  - [ ] 测试：`openra.mcp-echo` 从目录→批准→固定安装→项目内调用→结果可 @→升级→回滚；目录离线时已装能力可用。
+  - [ ] 测试：`hub.mcp-echo` 从目录→批准→固定安装→项目内调用→结果可 @→升级→回滚；目录离线时已装能力可用。
 - 不碰：契约定义与 Hub UI（G+D）、registry 客户端（X）、安装内核（C）。
 
 ## 6. HUB-11 Community, Credits & Discovery（后续里程碑 SY-M4；规格 OpenRA `docs/hub-community-discovery.md`）
