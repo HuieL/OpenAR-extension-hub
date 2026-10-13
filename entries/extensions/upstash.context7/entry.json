@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "upstash.context7",
+  "kind": "extension",
+  "name": "Context7",
+  "summary": "Up-to-date documentation and code examples for libraries and frameworks via Upstash's hosted Context7 MCP service; registers a connection, nothing is installed.",
+  "i18n": {
+    "zh-CN": "通过 Upstash 托管的 Context7 MCP 服务获取各类库与框架的最新文档和代码示例；只注册连接，不安装任何内容。",
+    "ja": "Upstash がホストする Context7 MCP サービス経由で、ライブラリやフレームワークの最新ドキュメントとコード例を取得。接続を登録するだけで、何もインストールしない。",
+    "ko": "Upstash가 호스팅하는 Context7 MCP 서비스를 통해 라이브러리와 프레임워크의 최신 문서와 코드 예제를 제공. 연결만 등록하며 아무것도 설치하지 않음.",
+    "es": "Documentación y ejemplos de código actualizados para librerías y frameworks a través del servicio MCP Context7 alojado por Upstash; registra una conexión, no instala nada."
+  },
+  "authors": [
+    {"name": "Upstash", "github": "upstash"}
+  ],
+  "adapters": ["HuieL"],
+  "registrySubmitter": "HuieL",
+  "categories": ["mcp", "docs"],
+  "source": {
+    "repo": "https://github.com/upstash/context7",
+    "path": ".",
+    "revision": "33414e6e3fc157c936348ca8ddba25e50dacaeee"
+  },
+  "version": "4.3.0",
+  "license": "MIT",
+  "review": {"status": "unreviewed"},
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": ["macos", "linux", "windows"]
+  },
+  "delivery": "mcp-remote",
+  "integration": "L0",
+  "capabilities": [],
+  "uiContributions": [],
+  "bindings": [],
+  "mcp": {
+    "endpoint": "https://mcp.context7.com/mcp",
+    "authRequirements": [],
+    "observed": {
+      "tools": ["resolve-library-id", "query-docs"],
+      "resources": [],
+      "observedAt": "2026-10-13T03:05:00Z",
+      "serverVersion": "4.3.0"
+    }
+  }
+}

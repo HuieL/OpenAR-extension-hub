@@ -36,6 +36,18 @@ account, and no install script to run here.
 4. Open a PR. CI runs `scripts/validate.py` (read-only, no secrets, no
    install step; it never executes anything from your entry).
 
+## Remote MCP services
+
+An `mcp-remote` entry registers a connection to a hosted MCP service; the
+service stays on its owner's infrastructure. The `observed` block is a live
+probe, not a promise: record the tools and resources a real handshake
+returned, the server version it reported, and the date of the observation.
+Metadata may be imported read-only from the official MCP Registry or the
+service's own repository, but the observation must come from this hub's own
+probe, and `source` still pins the upstream repository at an exact commit
+SHA. When the service changes, re-probe and update the entry; an entry whose
+observation has drifted is updated or deprecated, never quietly rewritten.
+
 ## What review means
 
 `review.status` records what a human looked at, and `reviewedRevision` pins

@@ -11,6 +11,17 @@
       "revision": "d2f7bb408da8c6fd90ede401bb743851dea9ed00",
       "entryPath": "entries/extensions/hub.mcp-echo/entry.json",
       "entrySha256": "f5b3d87dccf09ce2d472f0175c6f95f064a068b054325c85f6f43388ef2d265f"
+    },
+    {
+      "id": "upstash.context7",
+      "name": "Context7",
+      "summary": "Up-to-date documentation and code examples for libraries and frameworks via Upstash's hosted Context7 MCP service; registers a connection, nothing is installed.",
+      "delivery": "mcp-remote",
+      "integration": "L0",
+      "version": "4.3.0",
+      "revision": "33414e6e3fc157c936348ca8ddba25e50dacaeee",
+      "entryPath": "entries/extensions/upstash.context7/entry.json",
+      "entrySha256": "6590fbbe6fdded5861b95a6dd1b35abe146d334c68924f2912b798b6070e2ef5"
     }
   ]
 }
