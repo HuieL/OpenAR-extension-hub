@@ -41,7 +41,7 @@ def serve():
                 "result": {
                     "protocolVersion": PROTOCOL_VERSION,
                     "capabilities": {"tools": {}},
-                    "serverInfo": {"name": "mcp-echo", "version": "1.0.1"},
+                    "serverInfo": {"name": "mcp-echo", "version": "1.0.2"},
                 },
             })
         elif method == "notifications/initialized":
