@@ -7,10 +7,10 @@
       "summary": "Minimal local stdio MCP server exposing one echo tool; the reference end-to-end install target for the OpenRA extension hub.",
       "delivery": "mcp-local",
       "integration": "L0",
-      "version": "1.0.0",
-      "revision": "3fe5d5dfe800c2bcb5949d21eee0e932f56ffbe5",
+      "version": "1.0.1",
+      "revision": "d2f7bb408da8c6fd90ede401bb743851dea9ed00",
       "entryPath": "entries/extensions/hub.mcp-echo/entry.json",
-      "entrySha256": "edbcc63c573e9b710abc7798cf48ce8073dc01fa70e597cc8a4032bd62fd9125"
+      "entrySha256": "f5b3d87dccf09ce2d472f0175c6f95f064a068b054325c85f6f43388ef2d265f"
     }
   ]
 }

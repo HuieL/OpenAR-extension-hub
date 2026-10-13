@@ -18,9 +18,9 @@
   "source": {
     "repo": "https://github.com/HuieL/OpenAR-extension-hub",
     "path": "entries/extensions/hub.mcp-echo/package",
-    "revision": "3fe5d5dfe800c2bcb5949d21eee0e932f56ffbe5"
+    "revision": "d2f7bb408da8c6fd90ede401bb743851dea9ed00"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "licenseFile": "LICENSE",
   "review": {"status": "unreviewed"},
@@ -44,21 +44,21 @@
   "assets": [
     {
       "platform": "macos",
-      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/3fe5d5dfe800c2bcb5949d21eee0e932f56ffbe5/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.0.zip",
-      "sha256": "5be23d8a3599c350628b8ea65eb1ea2e19394eb1d9443a5ca462a204635facbb",
-      "bytes": 2652
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/d2f7bb408da8c6fd90ede401bb743851dea9ed00/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.1.zip",
+      "sha256": "e45bc8e4c883376e2a0d0ae3dcaee2d2891be3040efaa78ce0a19292d711a63a",
+      "bytes": 2670
     },
     {
       "platform": "linux",
-      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/3fe5d5dfe800c2bcb5949d21eee0e932f56ffbe5/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.0.zip",
-      "sha256": "5be23d8a3599c350628b8ea65eb1ea2e19394eb1d9443a5ca462a204635facbb",
-      "bytes": 2652
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/d2f7bb408da8c6fd90ede401bb743851dea9ed00/entries/extensions/hub.mcp-echo/package/hub.mcp-echo-1.0.1.zip",
+      "sha256": "e45bc8e4c883376e2a0d0ae3dcaee2d2891be3040efaa78ce0a19292d711a63a",
+      "bytes": 2670
     }
   ],
   "mcp": {
     "transport": "stdio",
     "command": ["server/echo.py"],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "env": []
   }
 }
