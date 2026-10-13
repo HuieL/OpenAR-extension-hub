@@ -6,11 +6,11 @@
       "name": "MCP Echo",
       "summary": "Minimal local stdio MCP server exposing one echo tool; the reference end-to-end install target for the OpenAR extension hub.",
       "delivery": "mcp-local",
-      "integration": "L0",
+      "integration": "L1",
       "version": "1.0.2",
       "revision": "76957d4585c52d8db9f38d55a89de8396c773d88",
       "entryPath": "entries/extensions/hub.mcp-echo/entry.json",
-      "entrySha256": "6404058f5c97de2639c4f351cd03e58905f8989422bae7286c65d100c51ed6a9"
+      "entrySha256": "602f1f28200a3c7d8ed0a088c89e672c2aceb04c86168fc56a09c9ed949f942d"
     },
     {
       "id": "upstash.context7",

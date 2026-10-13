@@ -303,6 +303,11 @@ def _(e, m):
     m["id"] = "openra.mcp-echo"
 
 
+@case("L0 entry declaring a package form page")
+def _(e, m):
+    e["integration"] = "L0"
+
+
 @case("package manifest version drift from the entry")
 def _(e, m):
     m["version"] = "0.2.0"

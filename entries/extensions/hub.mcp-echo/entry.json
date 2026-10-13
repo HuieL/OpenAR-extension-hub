@@ -40,7 +40,7 @@
     ]
   },
   "delivery": "mcp-local",
-  "integration": "L0",
+  "integration": "L1",
   "capabilities": [],
   "uiContributions": [],
   "bindings": [

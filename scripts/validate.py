@@ -294,6 +294,9 @@ def check_manifest(entry: dict, entry_id: str, manifest) -> None:
     if not isinstance(page, dict) or set(page) != {"form"} or not isinstance(page.get("form"), str):
         fail(entry_id, "package manifest page must be {form: action id}")
         return
+    if entry.get("integration") == "L0":
+        fail(entry_id, "a package form page is host-rendered UI; entry integration must be L1 or higher")
+        return
     actions = manifest.get("actions")
     if not isinstance(actions, list) or not 1 <= len(actions) <= 16:
         fail(entry_id, "package manifest carries 1-16 actions")
