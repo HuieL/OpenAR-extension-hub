@@ -409,6 +409,8 @@ def check_common(entry: dict, entry_id: str) -> bool:
         fail(entry_id, "kind must be 'extension'")
     if not namespaced_id(entry["id"]) or entry["id"] != entry_id:
         fail(entry_id, "id must be lowercase namespaced (>=2 dot segments) and equal the directory name")
+    if entry["id"].startswith("openra."):
+        fail(entry_id, "public entries never use the reserved openra.* namespace (app-shipped definitions)")
     if not bounded(entry["name"], 64):
         fail(entry_id, "name must be a non-empty string of at most 64 chars")
     if not bounded(entry["summary"], 512):

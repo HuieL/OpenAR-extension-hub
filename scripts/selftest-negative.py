@@ -204,6 +204,11 @@ def _(e, m):
     e["id"] = "Example.Mcp-Local"
 
 
+@case("reserved openra.* namespace")
+def _(e, m):
+    e["id"] = "openra.echo"
+
+
 @case("unpinned cli binding version")
 def _(e, m):
     e["bindings"] = [
