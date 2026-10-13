@@ -12,9 +12,12 @@ inline = value; ids use the runtime definition-id grammar (underscore
 allowed); cli adapter/version and mcp tool/version use the runtime
 identifier and plain-word charsets; env references use the runtime field
 name and bounds; entries carry the shared credit fields (authors required;
-maintainers, contributors, adapters, registrySubmitter, categories). Zero
-dependencies beyond the Python standard library; CI runs exactly this script
-with no secrets and no install step.
+maintainers, contributors, adapters, registrySubmitter, categories). A
+hosted package/extension.json (mcp-local convention) is validated against
+the runtime manifest contract: closed object schemas, exactly cli.invoke,
+no summary/lastUsedAt/presentation, id/version/hostApi/mcpServer/bindings
+agreeing with the entry. Zero dependencies beyond the Python standard
+library; CI runs exactly this script with no secrets and no install step.
 """
 
 import ipaddress
@@ -151,6 +154,240 @@ def observed_at_timestamp(value) -> bool:
     return True
 
 
+# --- package extension.json (the OpenRA runtime manifest) ------------------
+# Mirrors parse_user_definition in the OpenRA repository: the hub must not
+# list a hosted package the runtime would refuse to install. Hosted package/
+# directories follow the mcp-local convention (like the skill hub's hosted
+# skill/ directories); catalog copy lives in the entry, so manifest
+# presentation and summary are refused here.
+
+MAX_MANIFEST_BYTES = 64 * 1024
+MAX_SCHEMA_DEPTH = 4
+MAX_SCHEMA_NODES = 256
+MAX_ARRAY_ITEMS = 1000
+MAX_VALUE_BYTES = 256 * 1024
+SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
+SIDE_EFFECTS = {"read", "localWrite", "network"}
+SCOPES = {"personal", "project"}
+MANIFEST_FIELDS = {
+    "id", "version", "kind", "mcpServer", "hostApi", "scopes", "page",
+    "projectPanel", "configSchema", "capabilities", "actions", "title",
+    "presentation", "lastUsedAt", "summary",
+}
+FIELD_KEYS = {
+    "string": {"maxBytes", "maxLength", "pattern"},
+    "integer": set(),
+    "number": {"minimum", "maximum"},
+    "boolean": set(),
+    "array": {"items", "maxItems"},
+    "object": {"properties", "required", "additionalProperties"},
+}
+
+
+def valid_field(field, depth: int, nodes: list) -> bool:
+    if not isinstance(field, dict):
+        return False
+    kind = field.get("type")
+    if kind not in FIELD_KEYS or set(field) - FIELD_KEYS[kind] - {"type"}:
+        return False
+    nodes[0] += 1
+    if depth > MAX_SCHEMA_DEPTH or nodes[0] > MAX_SCHEMA_NODES:
+        return False
+    if kind == "string":
+        for key in ("maxBytes", "maxLength"):
+            limit = field.get(key)
+            if limit is not None and (not isinstance(limit, int) or isinstance(limit, bool)
+                                      or not 0 < limit <= MAX_VALUE_BYTES):
+                return False
+        return field.get("pattern") in (None, "^[0-9a-f]{64}$")
+    if kind == "number":
+        low, high = field.get("minimum"), field.get("maximum")
+        for bound in (low, high):
+            if bound is not None and (isinstance(bound, bool)
+                                      or not isinstance(bound, (int, float))):
+                return False
+        return low is None or high is None or low <= high
+    if kind == "array":
+        max_items = field.get("maxItems")
+        if (not isinstance(max_items, int) or isinstance(max_items, bool)
+                or not 0 < max_items <= MAX_ARRAY_ITEMS):
+            return False
+        return valid_field(field.get("items"), depth + 1, nodes)
+    if kind == "object":
+        return valid_object(field.get("properties"), field.get("required", []),
+                            field.get("additionalProperties"), depth, nodes)
+    return True
+
+
+def valid_object(properties, required, additional, depth: int, nodes: list) -> bool:
+    if additional is not False:  # the runtime rejects permissive objects
+        return False
+    if not isinstance(properties, dict) or len(properties) > 32:
+        return False
+    if not isinstance(required, list) or len(set(required)) != len(required):
+        return False
+    if not all(key in properties for key in required):
+        return False
+    if depth > MAX_SCHEMA_DEPTH:
+        return False
+    return all(IDENTIFIER.match(key) and valid_field(field, depth + 1, nodes)
+               for key, field in properties.items())
+
+
+def valid_object_schema(schema) -> bool:
+    if not isinstance(schema, dict) or set(schema) - {
+            "type", "properties", "required", "additionalProperties"}:
+        return False
+    if schema.get("type") != "object":
+        return False
+    return valid_object(schema.get("properties"), schema.get("required", []),
+                        schema.get("additionalProperties"), 0, [0])
+
+
+def check_manifest(entry: dict, entry_id: str, manifest) -> None:
+    if not isinstance(manifest, dict):
+        fail(entry_id, "package extension.json must be a JSON object")
+        return
+    unknown = set(manifest) - MANIFEST_FIELDS
+    if unknown:
+        fail(entry_id, f"package manifest has unknown fields: {sorted(unknown)}")
+        return
+    if manifest.get("summary") is not None or manifest.get("lastUsedAt") is not None:
+        fail(entry_id, "package manifest must not carry summary or lastUsedAt (runtime-reserved)")
+        return
+    if manifest.get("presentation") is not None:
+        fail(entry_id, "package manifest carries no presentation; catalog copy lives in the entry")
+        return
+    manifest_id = manifest.get("id")
+    if (not namespaced_id(manifest_id) or manifest_id != entry_id
+            or manifest_id.startswith("openra.")):
+        fail(entry_id, "package manifest id must equal the entry id and never use the openra.* namespace")
+        return
+    version = manifest.get("version")
+    if (not isinstance(version, str) or not SEMVER.match(version)
+            or version != entry.get("version")):
+        fail(entry_id, "package manifest version must be semver and equal the entry version")
+        return
+    if manifest.get("capabilities") != ["cli.invoke"]:
+        fail(entry_id, 'package manifest capabilities must be exactly ["cli.invoke"]')
+        return
+    title = manifest.get("title")
+    if title is not None and (not isinstance(title, str) or not title.strip()
+                              or len(title) > 160):
+        fail(entry_id, "package manifest title must be 1-160 chars when present")
+        return
+    scopes = manifest.get("scopes")
+    if (not isinstance(scopes, list) or not 1 <= len(scopes) <= 2
+            or len({json.dumps(scope, sort_keys=True) for scope in scopes}) != len(scopes)
+            or any(not isinstance(scope, dict) or set(scope) != {"kind"}
+                   or scope.get("kind") not in SCOPES for scope in scopes)):
+        fail(entry_id, "package manifest scopes are 1-2 unique {kind: personal|project} entries")
+        return
+    if not valid_object_schema(manifest.get("configSchema")):
+        fail(entry_id, "package manifest configSchema is not a runtime-valid closed object schema")
+        return
+    page = manifest.get("page")
+    if not isinstance(page, dict) or set(page) != {"form"} or not isinstance(page.get("form"), str):
+        fail(entry_id, "package manifest page must be {form: action id}")
+        return
+    actions = manifest.get("actions")
+    if not isinstance(actions, list) or not 1 <= len(actions) <= 16:
+        fail(entry_id, "package manifest carries 1-16 actions")
+        return
+    action_ids = set()
+    manifest_bindings = []
+    for action in actions:
+        if not isinstance(action, dict) or set(action) - {
+                "id", "binding", "sideEffect", "inputSchema", "outputSchema"}:
+            fail(entry_id, "each manifest action has id, binding, sideEffect, inputSchema, outputSchema")
+            return
+        if (not isinstance(action.get("id"), str) or not IDENTIFIER.match(action["id"])
+                or action["id"] in action_ids):
+            fail(entry_id, "manifest action ids are unique identifiers")
+            return
+        action_ids.add(action["id"])
+        if action.get("sideEffect") not in SIDE_EFFECTS:
+            fail(entry_id, "manifest action sideEffect is read, localWrite or network")
+            return
+        if (not valid_object_schema(action.get("inputSchema"))
+                or not valid_object_schema(action.get("outputSchema"))):
+            fail(entry_id, f"manifest action {action['id']} schemas are not runtime-valid closed object schemas")
+            return
+        binding = action.get("binding")
+        if not isinstance(binding, dict) or set(binding) - {
+                "kind", "tool", "inputSchemaDigest", "outputSchemaDigest"}:
+            fail(entry_id, f"manifest action {action['id']} binding is an mcp binding with pinned digests")
+            return
+        if (binding.get("kind") != "mcp" or not isinstance(binding.get("tool"), str)
+                or not PLAIN_WORD.match(binding["tool"])
+                or not isinstance(binding.get("inputSchemaDigest"), str)
+                or not HEX64.match(binding["inputSchemaDigest"])
+                or not (binding.get("outputSchemaDigest") is None
+                        or (isinstance(binding["outputSchemaDigest"], str)
+                            and HEX64.match(binding["outputSchemaDigest"])))):
+            fail(entry_id, f"manifest action {action['id']} binding must pin tool and schema digests")
+            return
+        manifest_bindings.append(binding)
+    if page["form"] not in action_ids:
+        fail(entry_id, "package manifest page.form must name a manifest action")
+        return
+    panel = manifest.get("projectPanel")
+    if panel is not None:
+        if (not isinstance(panel, dict) or set(panel) != {"component", "form"}
+                or panel.get("component") != "openra.action-form"
+                or panel.get("form") not in action_ids
+                or not any(scope == {"kind": "project"} for scope in scopes)):
+            fail(entry_id, "package manifest projectPanel is an openra.action-form view of a manifest action and needs the project scope")
+            return
+    if entry.get("delivery") != "mcp-local":
+        fail(entry_id, "hosted package/ directories are the mcp-local convention")
+        return
+    if manifest.get("kind") != "mcp":
+        fail(entry_id, "mcp-local package manifest kind must be mcp")
+        return
+    server = manifest.get("mcpServer")
+    if not isinstance(server, dict) or set(server) - {"command", "version", "env", "transport"}:
+        fail(entry_id, "package manifest mcpServer has exactly command, version, env, transport")
+        return
+    server = dict(server)
+    server.setdefault("env", [])
+    check_mcp({"delivery": "mcp-local", "mcp": server}, entry_id)
+    if server != entry.get("mcp"):
+        fail(entry_id, "package manifest mcpServer must equal the entry mcp spec (command, version, env, transport)")
+        return
+    if manifest.get("hostApi") != entry.get("compat", {}).get("hostApi"):
+        fail(entry_id, "package manifest hostApi must equal the entry compat.hostApi")
+        return
+    for binding in entry.get("bindings", []):
+        if not isinstance(binding, dict) or binding.get("kind") != "mcp":
+            continue
+        if not any(binding.get("tool") == action.get("tool")
+                   and binding.get("inputSchemaDigest") == action.get("inputSchemaDigest")
+                   and (binding.get("outputSchemaDigest") or None) == (action.get("outputSchemaDigest") or None)
+                   for action in manifest_bindings):
+            fail(entry_id, f"entry mcp binding {binding.get('tool')!r} has no matching manifest action binding")
+
+
+def check_package_manifest(entry: dict, entry_id: str, entry_dir) -> None:
+    manifest_path = entry_dir / "package" / "extension.json"
+    if not manifest_path.is_file():
+        return
+    try:
+        raw = manifest_path.read_bytes()
+    except OSError as error:
+        fail(entry_id, f"package extension.json is unreadable: {error}")
+        return
+    if len(raw) > MAX_MANIFEST_BYTES:
+        fail(entry_id, "package extension.json exceeds the 64 KiB runtime cap")
+        return
+    try:
+        manifest = json.loads(raw)
+    except json.JSONDecodeError as error:
+        fail(entry_id, f"package extension.json is not valid JSON: {error}")
+        return
+    check_manifest(entry, entry_id, manifest)
+
+
 def check_common(entry: dict, entry_id: str) -> bool:
     unknown = set(entry) - ENTRY_FIELDS
     if unknown:
@@ -173,8 +410,8 @@ def check_common(entry: dict, entry_id: str) -> bool:
     if not bounded(entry["summary"], 512):
         fail(entry_id, "summary must be a non-empty string of at most 512 chars")
     authors = entry.get("authors")
-    if not isinstance(authors, list) or not authors:
-        fail(entry_id, "authors must name at least the original creator(s)")
+    if not isinstance(authors, list) or not authors or len(authors) > 16:
+        fail(entry_id, "authors must name at least the original creator(s) (at most 16)")
     else:
         for author in authors:
             if (not isinstance(author, dict) or set(author) - {"name", "github"}
@@ -185,16 +422,16 @@ def check_common(entry: dict, entry_id: str) -> bool:
                 fail(entry_id, "author github must be a login without '@'")
     for field in ("maintainers", "contributors", "adapters"):
         logins = entry.get(field, [])
-        if not isinstance(logins, list) or any(
+        if not isinstance(logins, list) or len(logins) > 16 or any(
                 not isinstance(login, str) or not GITHUB_LOGIN.match(login) for login in logins):
-            fail(entry_id, f"{field} are github logins without '@'")
+            fail(entry_id, f"{field} are github logins without '@' (at most 16)")
     submitter = entry.get("registrySubmitter")
     if submitter is not None and not (isinstance(submitter, str) and GITHUB_LOGIN.match(submitter)):
         fail(entry_id, "registrySubmitter must be a github login without '@'")
     categories = entry.get("categories", [])
-    if not isinstance(categories, list) or any(
+    if not isinstance(categories, list) or len(categories) > 16 or any(
             not isinstance(category, str) or not 0 < len(category) <= 32 for category in categories):
-        fail(entry_id, "categories are coarse tags of at most 32 chars")
+        fail(entry_id, "categories are coarse tags of at most 32 chars (at most 16)")
     if "i18n" in entry:
         i18n = entry["i18n"]
         if not isinstance(i18n, dict) or set(i18n) - LOCALES or len(i18n) > len(LOCALES):
@@ -346,6 +583,9 @@ def check_assets(entry: dict, entry_id: str) -> None:
         else:
             fail(entry_id, "mcp-remote deliveries must not carry assets")
         return
+    if len(assets) > 16:
+        fail(entry_id, "at most 16 assets are allowed")
+        return
     platforms = set()
     for asset in assets:
         if not isinstance(asset, dict) or set(asset) != {"platform", "url", "sha256", "bytes"}:
@@ -472,6 +712,7 @@ def validate_entries() -> dict:
         check_bindings(entry, entry_id)
         check_assets(entry, entry_id)
         check_mcp(entry, entry_id)
+        check_package_manifest(entry, entry_id, entry_dir)
         by_id[entry_id] = {
             "raw": entry_path.read_bytes(),
             "entry": entry,

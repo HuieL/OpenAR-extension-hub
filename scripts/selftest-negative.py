@@ -44,7 +44,12 @@ def base_entry() -> dict:
         "delivery": "mcp-local",
         "integration": "L1",
         "bindings": [
-            {"kind": "mcp", "tool": "echo", "inputSchemaDigest": HEX64}
+            {
+                "kind": "mcp",
+                "tool": "echo",
+                "inputSchemaDigest": HEX64,
+                "outputSchemaDigest": HEX64,
+            }
         ],
         "assets": [
             {
@@ -76,6 +81,63 @@ def run_checks(entry: dict) -> list[str]:
     return list(validate.errors)
 
 
+def base_manifest() -> dict:
+    return {
+        "id": "example.mcp-local",
+        "version": "0.1.0",
+        "kind": "mcp",
+        "mcpServer": {
+            "command": ["bin/echo-server", "--port", "8080"],
+            "version": "0.1.0",
+            "env": [],
+            "transport": "stdio",
+        },
+        "hostApi": {"min": 1, "max": 2},
+        "scopes": [{"kind": "personal"}],
+        "page": {"form": "echo"},
+        "configSchema": {
+            "type": "object", "properties": {}, "additionalProperties": False
+        },
+        "capabilities": ["cli.invoke"],
+        "actions": [
+            {
+                "id": "echo",
+                "binding": {
+                    "kind": "mcp",
+                    "tool": "echo",
+                    "inputSchemaDigest": HEX64,
+                    "outputSchemaDigest": HEX64,
+                },
+                "sideEffect": "read",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {"text": {"type": "string"}},
+                    "required": ["text"],
+                    "additionalProperties": False,
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "echo": {
+                            "type": "object",
+                            "properties": {"text": {"type": "string"}},
+                            "additionalProperties": False,
+                        }
+                    },
+                    "required": ["echo"],
+                    "additionalProperties": False,
+                },
+            }
+        ],
+    }
+
+
+def run_manifest_checks(entry: dict, manifest: dict) -> list[str]:
+    validate.errors = []
+    validate.check_manifest(entry, entry.get("id", "?"), manifest)
+    return list(validate.errors)
+
+
 CASES = []
 
 
@@ -87,94 +149,94 @@ def case(name):
 
 
 @case("shell metacharacter in command word")
-def _(e):
+def _(e, m):
     e["mcp"]["command"] = ["bin/echo-server", "--port; rm -rf /"]
 
 
 @case("absolute path as command[0]")
-def _(e):
+def _(e, m):
     e["mcp"]["command"] = ["/usr/bin/env", "python"]
 
 
 @case("host binary (no slash) as command[0]")
-def _(e):
+def _(e, m):
     e["mcp"]["command"] = ["python", "server.py"]
 
 
 @case("parent-directory component in command")
-def _(e):
+def _(e, m):
     e["mcp"]["command"] = ["../escape/server"]
 
 
 @case("pipe in command argument")
-def _(e):
+def _(e, m):
     e["mcp"]["command"] = ["bin/echo-server", "8080|sh"]
 
 
 @case("mcp binding missing inputSchemaDigest")
-def _(e):
+def _(e, m):
     del e["bindings"][0]["inputSchemaDigest"]
 
 
 @case("asset url with userinfo credentials")
-def _(e):
+def _(e, m):
     e["assets"][0]["url"] = "https://token:secret@github.com/example/echo-mcp/echo.tar.gz"
 
 
 @case("asset url on a private-network host")
-def _(e):
+def _(e, m):
     e["assets"][0]["url"] = "https://10.0.0.1/echo.tar.gz"
 
 
 @case("mutable revision instead of commit SHA")
-def _(e):
+def _(e, m):
     e["source"]["revision"] = "main"
 
 
 @case("bundled delivery (built-ins are not listed)")
-def _(e):
+def _(e, m):
     e["delivery"] = "bundled"
 
 
 @case("uppercase id")
-def _(e):
+def _(e, m):
     e["id"] = "Example.Mcp-Local"
 
 
 @case("unpinned cli binding version")
-def _(e):
+def _(e, m):
     e["bindings"] = [
         {"kind": "cli", "adapter": "ripgrep", "version": "latest", "hash": HEX64}
     ]
 
 
 @case("mcp spec on a package delivery")
-def _(e):
+def _(e, m):
     e["delivery"] = "package"
 
 
 @case("reviewed status without reviewedRevision")
-def _(e):
+def _(e, m):
     e["review"] = {"status": "reviewed"}
 
 
 @case("missing authors")
-def _(e):
+def _(e, m):
     del e["authors"]
 
 
 @case("empty authors list")
-def _(e):
+def _(e, m):
     e["authors"] = []
 
 
 @case("env name outside the [A-Za-z0-9_] charset")
-def _(e):
+def _(e, m):
     e["mcp"]["env"] = [{"name": "API-KEY", "credentialRef": "echo/api-key"}]
 
 
 @case("duplicate env names")
-def _(e):
+def _(e, m):
     e["mcp"]["env"] = [
         {"name": "API_KEY", "credentialRef": "echo/api-key"},
         {"name": "API_KEY", "credentialRef": "echo/other"},
@@ -182,54 +244,121 @@ def _(e):
 
 
 @case("registrySubmitter with an @ prefix")
-def _(e):
+def _(e, m):
     e["registrySubmitter"] = "@example-author"
 
 
 @case("inline = value in a command word")
-def _(e):
+def _(e, m):
     e["mcp"]["command"] = ["bin/echo-server", "--token=sk-live-123"]
 
 
 @case("asset url on an alibaba metadata host")
-def _(e):
+def _(e, m):
     e["assets"][0]["url"] = "https://100.100.100.200/latest/meta-data/echo.tar.gz"
 
 
 @case("asset url on an aws ipv6 metadata host")
-def _(e):
+def _(e, m):
     e["assets"][0]["url"] = "https://[fd00:ec2::254]/latest/meta-data/echo.tar.gz"
 
 
 @case("asset url on a single-label domain")
-def _(e):
+def _(e, m):
     e["assets"][0]["url"] = "https://intranet/echo.tar.gz"
 
 
 @case("cli binding adapter outside the identifier charset")
-def _(e):
+def _(e, m):
     e["bindings"] = [
         {"kind": "cli", "adapter": "ripgrep adapter", "version": "14.1.0", "hash": HEX64}
     ]
 
 
 @case("mcp binding tool outside the plain-word charset")
-def _(e):
+def _(e, m):
     e["bindings"] = [
         {"kind": "mcp", "tool": "echo tool", "inputSchemaDigest": HEX64}
     ]
 
 
 @case("mcp-local version outside the plain-word charset")
-def _(e):
+def _(e, m):
     e["mcp"]["version"] = "0.1.0 (nightly)"
 
 
+@case("package manifest outputSchema without additionalProperties (the 1.0.0 bug)")
+def _(e, m):
+    del m["actions"][0]["outputSchema"]["additionalProperties"]
+
+
+@case("package manifest id in the openra.* namespace")
+def _(e, m):
+    m["id"] = "openra.mcp-echo"
+
+
+@case("package manifest version drift from the entry")
+def _(e, m):
+    m["version"] = "0.2.0"
+
+
+@case("package manifest capabilities beyond cli.invoke")
+def _(e, m):
+    m["capabilities"] = ["cli.invoke", "scratchpad.read"]
+
+
+@case("package manifest summary (runtime-reserved field)")
+def _(e, m):
+    m["summary"] = "catalog copy lives in the entry"
+
+
+@case("entry mcp binding with no manifest action backing")
+def _(e, m):
+    e["bindings"][0]["tool"] = "other"
+
+
+@case("package manifest mcpServer command drift")
+def _(e, m):
+    m["mcpServer"]["command"] = ["bin/other-server"]
+
+
+@case("package manifest hostApi drift")
+def _(e, m):
+    m["hostApi"] = 1
+
+
+@case("package manifest page form outside the action ids")
+def _(e, m):
+    m["page"] = {"form": "nope"}
+
+
+@case("package manifest schema property name outside the identifier charset")
+def _(e, m):
+    schema = m["actions"][0]["inputSchema"]
+    schema["properties"]["bad.name"] = {"type": "string"}
+
+
+@case("package manifest permissive configSchema")
+def _(e, m):
+    m["configSchema"]["additionalProperties"] = True
+
+
+@case("package manifest required key not among the properties")
+def _(e, m):
+    schema = m["actions"][0]["inputSchema"]
+    schema["required"] = ["text", "missing"]
+
+
 def main() -> None:
-    # The unmutated fixture must pass every check.
+    # The unmutated fixtures must pass every check.
     clean = run_checks(base_entry())
     if clean:
         print("FAIL: base entry does not validate cleanly:")
+        print("\n".join(clean))
+        sys.exit(1)
+    clean = run_manifest_checks(base_entry(), base_manifest())
+    if clean:
+        print("FAIL: base manifest does not validate cleanly:")
         print("\n".join(clean))
         sys.exit(1)
 
@@ -245,8 +374,9 @@ def main() -> None:
     failures = 0
     for name, mutate in CASES:
         entry = base_entry()
-        mutate(entry)
-        errors = run_checks(entry)
+        manifest = base_manifest()
+        mutate(entry, manifest)
+        errors = run_checks(entry) + run_manifest_checks(entry, manifest)
         if errors:
             print(f"ok   {name} -> {errors[0]}")
         else:
@@ -255,7 +385,7 @@ def main() -> None:
     if failures:
         print(f"{failures} negative case(s) were accepted")
         sys.exit(1)
-    print(f"OK: {len(CASES)} negative cases rejected, base entry clean")
+    print(f"OK: {len(CASES)} negative cases rejected, base entry and manifest clean")
 
 
 if __name__ == "__main__":
