@@ -16,3 +16,5 @@ jobs:
         run: |
           python3 scripts/validate.py
           python3 scripts/build-index.py --check
+      - name: Negative selftest (the validator still rejects every mutation)
+        run: python3 scripts/selftest-negative.py
