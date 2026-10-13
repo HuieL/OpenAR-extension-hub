@@ -29,6 +29,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ENTRIES = ROOT / "entries" / "extensions"
 MAX_INDEX_BYTES = 512 * 1024
+MAX_INDEX_ENTRIES = 512
 MAX_ENTRY_BYTES = 256 * 1024
 MAX_ASSET_BYTES = 512 * 1024 * 1024
 LOCALES = {"en", "zh-CN", "ja", "ko", "es"}
@@ -742,6 +743,9 @@ def validate_index(by_id: dict) -> None:
     entries = index["entries"]
     if not isinstance(entries, list):
         fail("index", "entries must be a list")
+        return
+    if len(entries) > MAX_INDEX_ENTRIES:
+        fail("index", f"extensions.json exceeds the {MAX_INDEX_ENTRIES} entry cap")
         return
     ids = [row.get("id") for row in entries if isinstance(row, dict)]
     if ids != sorted(ids) or len(set(ids)) != len(ids):
