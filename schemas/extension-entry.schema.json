@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/HuieL/OpenAR-extension-hub/schemas/extension-entry.schema.json",
   "title": "OpenAR Extension Hub entry",
-  "description": "One directory record per extension under entries/extensions/<id>/entry.json. scripts/validate.py is the authoritative checker for CI; this schema documents the same wire contract as the OpenRA registry client (docs/extension-hub-entry-format.md in the OpenRA repository).",
+  "description": "One directory record per extension under entries/extensions/<id>/entry.json. scripts/validate.py is the authoritative checker for CI; this schema documents the same wire contract as the OpenAR registry client (docs/extension-hub-entry-format.md in the OpenAR repository).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -68,7 +68,7 @@
           }
         }
       },
-      "description": "Original creators of the extension, distinct from the OpenRA adapter and the registry submitter. Verified against the source repo's commits, license, or README during review."
+      "description": "Original creators of the extension, distinct from the OpenAR adapter and the registry submitter. Verified against the source repo's commits, license, or README during review."
     },
     "maintainers": {
       "type": "array",
@@ -95,7 +95,7 @@
         "type": "string",
         "pattern": "^[A-Za-z0-9-]{1,39}$"
       },
-      "description": "GitHub logins of the people who adapted the extension for OpenRA. Adapting is not authorship."
+      "description": "GitHub logins of the people who adapted the extension for OpenAR. Adapting is not authorship."
     },
     "registrySubmitter": {
       "type": "string",
@@ -238,7 +238,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 32,
-          "description": "Minimum OpenRA version."
+          "description": "Minimum OpenAR version."
         },
         "hostApi": {
           "description": "Exact host API number or {min, max} range; same semantics as the extensions manifest.",
@@ -298,7 +298,7 @@
         "L2",
         "L3"
       ],
-      "description": "Self-declared integration ceiling: L0 agent-callable no page, L1 host generic forms, L2 OpenRA UI contract, L3 sandboxed MCP Apps (post-M1). The host renders by its registered bindings, never by this declaration."
+      "description": "Self-declared integration ceiling: L0 agent-callable no page, L1 host generic forms, L2 OpenAR UI contract, L3 sandboxed MCP Apps (post-M1). The host renders by its registered bindings, never by this declaration."
     },
     "capabilities": {
       "type": "array",

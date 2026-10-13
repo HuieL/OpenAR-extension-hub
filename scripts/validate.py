@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Validate the registry: entry.json contract, extensions.json consistency.
 
-Mirrors the OpenRA wire contract documented as
-docs/extension-hub-entry-format.md in the OpenRA repository: the hub must
-accept exactly what the OpenRA validator accepts. Aligned with the runtime
+Mirrors the OpenAR wire contract documented as
+docs/extension-hub-entry-format.md in the OpenAR repository: the hub must
+accept exactly what the OpenAR validator accepts. Aligned with the runtime
 contract: HTTPS URLs reject userinfo, loopback/private/link-local and cloud
 metadata hosts (169.254.0.0/16, 100.100.100.200, fd00:ec2::/32) and
 single-label domains; mcp-local command words carry the runtime argv charset
@@ -155,8 +155,8 @@ def observed_at_timestamp(value) -> bool:
     return True
 
 
-# --- package extension.json (the OpenRA runtime manifest) ------------------
-# Mirrors parse_user_definition in the OpenRA repository: the hub must not
+# --- package extension.json (the OpenAR runtime manifest) ------------------
+# Mirrors parse_user_definition in the OpenAR repository: the hub must not
 # list a hosted package the runtime would refuse to install. Hosted package/
 # directories follow the mcp-local convention (like the skill hub's hosted
 # skill/ directories); catalog copy lives in the entry, so manifest

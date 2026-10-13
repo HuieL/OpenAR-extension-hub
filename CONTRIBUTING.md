@@ -1,6 +1,6 @@
 # Contributing to the OpenAR Extension Hub
 
-This repository is a static catalog. OpenRA reads `extensions.json` at a pinned
+This repository is a static catalog. OpenAR reads `extensions.json` at a pinned
 commit SHA and verifies each entry's sha256 before use. There is no server, no
 account, and no install script to run here.
 
@@ -13,14 +13,14 @@ account, and no install script to run here.
      installed tree;
    - `mcp-remote` — a registered connection; nothing is downloaded.
 
-   Extensions that ship inside the OpenRA app are not listed here; the app's
+   Extensions that ship inside the OpenAR app are not listed here; the app's
    own catalog shows them.
 2. Create `entries/extensions/<id>/entry.json` following
    `schemas/extension-entry.schema.json`. The required facts:
    - `id` — lowercase namespaced identity (e.g. `acme.calendar`), equal to
      the directory name, globally unique, never reused;
    - `authors` — the original creator(s), credited from the source repo's
-     commits, license, or README. Adapting an extension for OpenRA is
+     commits, license, or README. Adapting an extension for OpenAR is
      recorded in `adapters`, submitting it in `registrySubmitter`; neither
      grants authorship. `maintainers`, `contributors` and `categories` are
      optional;
