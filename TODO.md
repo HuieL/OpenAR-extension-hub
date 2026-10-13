@@ -67,6 +67,7 @@
 - [ ] ~~calendar 作为 HUB-M2 的三栏样例~~（用户裁定取消：内置不上 hub）；三栏样例由首个 L2 第三方适配条目承担（与 G/D 核对）。
 - [ ] Craft Suite：一个 Suite 条目引用各组件（Photo/Vector/Deck/Print…），组件独立版本/平台；安装 Suite 不安装全部组件（与 H 核对）。
 - [ ] CONTRIBUTING：开发者自托管源码/发行包，向本仓提交元数据 PR；外部 MCP 可从官方 MCP Registry 只读导入元数据（须固定 revision 并实测能力）。
+  - 回执（2026-10-13，`agent-y/context7-remote@354514c`，基 `main@b556e7e`，2 文件）：CONTRIBUTING 新增 "Remote MCP services" 节（observed=实活探测非承诺；元数据可只读导入官方 MCP Registry/上游仓，观测必须来自本 hub 自己的探测；source 仍固定 40-hex revision；观测漂移→更新或弃用，绝不静默改写）+ 首个真实第三方 `mcp-remote` 条目 `upstash.context7`（MIT、上游仓可钉、无鉴权；2026-10-13 实测握手：server 4.3.0、tools [resolve-library-id, query-docs]、resources []、含一次真实 tools/call）。validate/build-index --check/38 负例全过；勾选由 Review 依据本回执执行。
 - [ ] 弃用/高风险/下架流程同 X。
 
 ## 4. 验收与回报
