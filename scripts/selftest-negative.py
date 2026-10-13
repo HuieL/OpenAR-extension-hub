@@ -84,6 +84,7 @@ def run_checks(entry: dict) -> list[str]:
 def base_manifest() -> dict:
     return {
         "id": "example.mcp-local",
+        "title": "Echo MCP",
         "version": "0.1.0",
         "kind": "mcp",
         "mcpServer": {
@@ -349,6 +350,32 @@ def _(e, m):
     schema["required"] = ["text", "missing"]
 
 
+
+@case("package manifest missing required title")
+def _(e, m):
+    del m["title"]
+
+
+@case("package manifest null title")
+def _(e, m):
+    m["title"] = None
+
+
+@case("package manifest title exceeds 160 UTF-8 bytes")
+def _(e, m):
+    m["title"] = "研" * 54
+
+
+@case("package manifest title exceeds 160 ASCII bytes")
+def _(e, m):
+    m["title"] = "x" * 161
+
+
+@case("package manifest title contains an unpaired surrogate")
+def _(e, m):
+    m["title"] = "\ud800"
+
+
 def main() -> None:
     # The unmutated fixtures must pass every check.
     clean = run_checks(base_entry())
@@ -370,6 +397,12 @@ def main() -> None:
         print("FAIL: underscore id segment must be accepted:")
         print("\n".join(errors))
         sys.exit(1)
+
+    # The runtime title cap counts UTF-8 bytes, not Unicode code points.
+    for title in ("x" * 160, "研" * 53 + "x"):
+        manifest = base_manifest()
+        manifest["title"] = title
+        assert not run_manifest_checks(base_entry(), manifest), "exactly 160 UTF-8 bytes must pass"
 
     failures = 0
     for name, mutate in CASES:

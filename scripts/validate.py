@@ -273,9 +273,12 @@ def check_manifest(entry: dict, entry_id: str, manifest) -> None:
         fail(entry_id, 'package manifest capabilities must be exactly ["cli.invoke"]')
         return
     title = manifest.get("title")
-    if title is not None and (not isinstance(title, str) or not title.strip()
-                              or len(title) > 160):
-        fail(entry_id, "package manifest title must be 1-160 chars when present")
+    try:
+        title_bytes = len(title.encode("utf-8")) if isinstance(title, str) else 0
+    except UnicodeEncodeError:
+        title_bytes = 0
+    if not isinstance(title, str) or not title.strip() or not 0 < title_bytes <= 160:
+        fail(entry_id, "package manifest title must be 1-160 UTF-8 bytes")
         return
     scopes = manifest.get("scopes")
     if (not isinstance(scopes, list) or not 1 <= len(scopes) <= 2
