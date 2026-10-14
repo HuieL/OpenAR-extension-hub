@@ -19,9 +19,9 @@
   "source": {
     "repo": "https://github.com/upstash/context7",
     "path": ".",
-    "revision": "33414e6e3fc157c936348ca8ddba25e50dacaeee"
+    "revision": "3cdd8d4add9747c2f59d03c83ce862cc0825c4bb"
   },
-  "version": "4.3.0",
+  "version": "4.4.1",
   "license": "MIT",
   "review": {"status": "unreviewed"},
   "compat": {
@@ -40,8 +40,8 @@
     "observed": {
       "tools": ["resolve-library-id", "query-docs"],
       "resources": [],
-      "observedAt": "2026-10-13T03:05:00Z",
-      "serverVersion": "4.3.0"
+      "observedAt": "2026-10-14T10:54:28Z",
+      "serverVersion": "4.4.1"
     }
   }
 }
