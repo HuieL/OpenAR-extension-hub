@@ -47,6 +47,9 @@ service's own repository, but the observation must come from this hub's own
 probe, and `source` still pins the upstream repository at an exact commit
 SHA. When the service changes, re-probe and update the entry; an entry whose
 observation has drifted is updated or deprecated, never quietly rewritten.
+`python3 scripts/probe-remote.py [id…]` repeats the probe for every
+`mcp-remote` entry and lists drift (tools added/removed, recorded resources
+missing, server version); the `probe-remote` workflow runs it on demand.
 
 ## What review means
 

@@ -1,0 +1,20 @@
+name: probe-remote
+
+# Re-probe every mcp-remote entry and report drift from its `observed`
+# block. Manual only (Actions budget); a reviewer runs it before merging a
+# remote entry or when a service announces a change. Reads only: no
+# secrets, no write permissions, nothing is committed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to the v4.2.2 commit; bump deliberately.
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Probe remote MCP services
+        run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/probe-remote.py
