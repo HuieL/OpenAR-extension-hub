@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "huggingface.hub-mcp",
+  "kind": "extension",
+  "name": "Hugging Face",
+  "summary": "Search and inspect models, datasets, Spaces and papers on the Hugging Face Hub through Hugging Face's hosted MCP service; registers a connection, nothing is installed. Works anonymously; signing in is optional.",
+  "i18n": {
+    "zh-CN": "通过 Hugging Face 托管的 MCP 服务检索并查看 Hugging Face Hub 上的模型、数据集、Spaces 与论文；只注册连接，不安装任何内容。匿名可用，登录可选。",
+    "ja": "Hugging Face がホストする MCP サービス経由で、Hugging Face Hub のモデル・データセット・Spaces・論文を検索・参照。接続を登録するだけで、何もインストールしない。匿名で利用でき、サインインは任意。",
+    "ko": "Hugging Face가 호스팅하는 MCP 서비스를 통해 Hugging Face Hub의 모델, 데이터셋, Spaces, 논문을 검색하고 살펴봄. 연결만 등록하며 아무것도 설치하지 않음. 익명으로 사용 가능하며 로그인은 선택.",
+    "es": "Busca e inspecciona modelos, datasets, Spaces y artículos del Hugging Face Hub mediante el servicio MCP alojado por Hugging Face; registra una conexión, no instala nada. Funciona de forma anónima; iniciar sesión es opcional."
+  },
+  "authors": [
+    {
+      "name": "Hugging Face",
+      "github": "huggingface"
+    }
+  ],
+  "adapters": [
+    "HuieL"
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": [
+    "mcp",
+    "research",
+    "datasets",
+    "models"
+  ],
+  "source": {
+    "repo": "https://github.com/huggingface/hf-mcp-server",
+    "path": ".",
+    "revision": "1011f57ddee32a7505f4d8406da34cb27bc383c4"
+  },
+  "version": "0.4.30",
+  "license": "MIT",
+  "review": {
+    "status": "unreviewed"
+  },
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ]
+  },
+  "delivery": "mcp-remote",
+  "integration": "L0",
+  "capabilities": [],
+  "uiContributions": [],
+  "bindings": [],
+  "mcp": {
+    "endpoint": "https://huggingface.co/mcp",
+    "authRequirements": [],
+    "observed": {
+      "tools": [
+        "hf_whoami",
+        "hub_repo_search",
+        "hub_repo_details",
+        "hf_fs"
+      ],
+      "resources": [
+        "skill://hf-cli/SKILL.md",
+        "skill://hf-cloud-aws-context-discovery/SKILL.md",
+        "skill://hf-cloud-python-env-setup/SKILL.md",
+        "skill://hf-cloud-sagemaker-deployment-planner/SKILL.md",
+        "skill://hf-cloud-sagemaker-iam-preflight/SKILL.md",
+        "skill://hf-cloud-sagemaker-production-defaults/SKILL.md",
+        "skill://hf-cloud-serving-image-selection/SKILL.md",
+        "skill://hf-mem/SKILL.md",
+        "skill://huggingface-best/SKILL.md",
+        "skill://huggingface-community-evals/SKILL.md",
+        "skill://huggingface-datasets/SKILL.md",
+        "skill://huggingface-gradio/SKILL.md",
+        "skill://huggingface-llm-trainer/SKILL.md",
+        "skill://huggingface-local-models/SKILL.md",
+        "skill://huggingface-lora-space-builder/SKILL.md",
+        "skill://huggingface-paper-publisher/SKILL.md",
+        "skill://huggingface-papers/SKILL.md",
+        "skill://huggingface-spaces/SKILL.md",
+        "skill://huggingface-tool-builder/SKILL.md",
+        "skill://huggingface-trackio/SKILL.md",
+        "skill://huggingface-vision-trainer/SKILL.md",
+        "skill://huggingface-zerogpu/SKILL.md",
+        "skill://train-sentence-transformers/SKILL.md",
+        "skill://transformers-js/SKILL.md",
+        "skill://trl-training/SKILL.md"
+      ],
+      "observedAt": "2026-10-14T10:34:01Z",
+      "serverVersion": "0.4.30"
+    }
+  }
+}
