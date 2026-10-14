@@ -70,6 +70,9 @@
   - Y 备注（2026-10-13）：schema 已支持，无需改契约——Suite 条目=普通 extension entry，用 `dependencies[]`（≤8，`{id, version?, optional?}`）引用各组件条目 id，组件全部 `optional: true` 即"安装 Suite 不安装全部组件"（无依赖求解，运行时按需）。**等 H 提供**：组件清单（哪些上 hub、各自 version/platforms/artifacts/上游 repo+revision）。H 给事实后 Y 一个分支即可上条目。
 - [ ] CONTRIBUTING：开发者自托管源码/发行包，向本仓提交元数据 PR；外部 MCP 可从官方 MCP Registry 只读导入元数据（须固定 revision 并实测能力）。
   - 回执（2026-10-13，`agent-y/context7-remote@354514c`，基 `main@b556e7e`，2 文件）：CONTRIBUTING 新增 "Remote MCP services" 节（observed=实活探测非承诺；元数据可只读导入官方 MCP Registry/上游仓，观测必须来自本 hub 自己的探测；source 仍固定 40-hex revision；观测漂移→更新或弃用，绝不静默改写）+ 首个真实第三方 `mcp-remote` 条目 `upstash.context7`（MIT、上游仓可钉、无鉴权；2026-10-13 实测握手：server 4.3.0、tools [resolve-library-id, query-docs]、resources []、含一次真实 tools/call）。validate/build-index --check/38 负例全过；勾选由 Review 依据本回执执行。
+  - 回执（2026-10-14，`agent-y/remote-drift-probe@06e6f14`，基 `main@3aab93c`）：`scripts/probe-remote.py` 对每个 `mcp-remote` 条目重做匿名握手（initialize→tools/list→resources/list，分页），与 `observed` 比对并列出漂移；只读、不用凭据，需鉴权的服务标“跳过”；`probe-remote` 工作流仅手动触发。首跑发现 `upstash.context7` 服务版本 4.3.0→4.4.1（工具不变）。
+  - 回执（2026-10-14，`agent-y/context7-4.4.1@fab6d77`）：按漂移重新观测（2026-10-14T10:54:28Z，含一次真实 tools/call），上游改钉 release tag `@upstash/context7-mcp@4.4.1`=`3cdd8d4`（MIT 不变）；条目仅 4 行改动。
+  - 回执（2026-10-14，`agent-y/huggingface-mcp@8efe576`）：新增第三方 `mcp-remote` 条目 `huggingface.hub-mcp`（上游 huggingface/hf-mcp-server@`1011f57`，MIT，匿名可用）；自测握手 server 0.4.30、4 个工具、一次真实 tools/call。服务列出 158 个 resources（25 个 skill × 其附属文件），超 64 上限，故只记 25 个 skill 入口（SKILL.md）——请 Review 裁定是否改为放宽上限（需 schema+宿主镜像同改）。与 context7 分支都会重生 `extensions.json`，后合者重跑 build-index。
 - [ ] 弃用/高风险/下架流程同 X。
   - 回执（2026-10-13，`agent-y/deprecation-process@580580f`，基 `main@354514c`，1 文件）：CONTRIBUTING "Updates and removal" 显式写明机制——弃用/高风险 = 改 `review.status` 并在 PR 写理由，条目与历史绝不静默删除（与 skill-hub 同表述；schema 的 review.status 枚举已含 deprecated/high-risk，无需改）。勾选由 Review 依据本回执执行。
 
