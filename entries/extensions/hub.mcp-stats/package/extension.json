@@ -1,0 +1,211 @@
+{
+  "id": "hub.mcp-stats",
+  "title": "Benchmark Stats",
+  "version": "1.0.0",
+  "kind": "mcp",
+  "mcpServer": {
+    "command": [
+      "server/stats.py"
+    ],
+    "version": "1.0.0",
+    "env": [],
+    "transport": "stdio"
+  },
+  "hostApi": 1,
+  "scopes": [
+    {
+      "kind": "personal"
+    }
+  ],
+  "page": {
+    "form": "items_needed"
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "capabilities": [
+    "cli.invoke"
+  ],
+  "actions": [
+    {
+      "id": "accuracy_interval",
+      "binding": {
+        "kind": "mcp",
+        "tool": "accuracy_interval",
+        "inputSchemaDigest": "e8e31afa687ea6d45e637444c3430b49be33bc2c1405ae3442134ad396eec0ff",
+        "outputSchemaDigest": "1f01ae5cd721bf12a3be1dd8098cae1ab6aadca298c2cc389cf240edc721aaa0"
+      },
+      "sideEffect": "read",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "correct": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000000
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 0.999
+          }
+        },
+        "required": [
+          "correct",
+          "total"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "accuracy": {
+            "type": "number"
+          },
+          "lower": {
+            "type": "number"
+          },
+          "upper": {
+            "type": "number"
+          },
+          "confidence": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "accuracy",
+          "lower",
+          "upper",
+          "confidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "compare_paired",
+      "binding": {
+        "kind": "mcp",
+        "tool": "compare_paired",
+        "inputSchemaDigest": "1417a58725b239acc996d8295cf9418417c5796fdf03f536f27ff32b80c76b69",
+        "outputSchemaDigest": "d42bfb910226dec1fe4c540dfcd4508de4468e0620e3a268cf066c6d397827a8"
+      },
+      "sideEffect": "read",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "only_a_correct": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "only_b_correct": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000000
+          },
+          "alpha": {
+            "type": "number",
+            "minimum": 0.0001,
+            "maximum": 0.5
+          }
+        },
+        "required": [
+          "only_a_correct",
+          "only_b_correct"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "discordant": {
+            "type": "integer"
+          },
+          "p_value": {
+            "type": "number"
+          },
+          "significant": {
+            "type": "boolean"
+          },
+          "alpha": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "discordant",
+          "p_value",
+          "significant",
+          "alpha"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "items_needed",
+      "binding": {
+        "kind": "mcp",
+        "tool": "items_needed",
+        "inputSchemaDigest": "32f86dd3dce42c41fd81e77dea33c505711771af790ca76dfa59d5928892c970",
+        "outputSchemaDigest": "89701771976e1b245f1b53402bc3cc42ae550f39428dff1bac2bd179bc344085"
+      },
+      "sideEffect": "read",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "accuracy": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 0.99
+          },
+          "gap": {
+            "type": "number",
+            "minimum": 0.001,
+            "maximum": 0.98
+          },
+          "power": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 0.99
+          },
+          "alpha": {
+            "type": "number",
+            "minimum": 0.0001,
+            "maximum": 0.5
+          }
+        },
+        "required": [
+          "accuracy",
+          "gap"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "items_per_system": {
+            "type": "integer"
+          },
+          "power": {
+            "type": "number"
+          },
+          "alpha": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "items_per_system",
+          "power",
+          "alpha"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
