@@ -11,10 +11,16 @@ account, and no install script to run here.
    - `package` / `cli` — a pinned release artifact per platform;
    - `mcp-local` — a package whose MCP server command runs inside the
      installed tree;
-   - `mcp-remote` — a registered connection; nothing is downloaded.
+   - `mcp-remote` — a registered connection; nothing is downloaded;
+   - `bundled` — reserved for the OpenAR maintainers: a first-party extension
+     whose code ships inside the app (Deep Research, Paper Search, Calendar,
+     Deadlines, Craft Suite, Scientific Compute). Installing it from the Hub
+     switches it on; nothing is downloaded, and uninstalling keeps its data.
+     Its `version` must equal the version the app ships.
 
-   Extensions that ship inside the OpenAR app are not listed here; the app's
-   own catalog shows them.
+   The app's own sidebar features (Reminders, Knowledge Hub, Skill Hub,
+   Research Outputs, Library, AI Coworkers) are not extensions and are never
+   listed here.
 2. Create `entries/extensions/<id>/entry.json` following
    `schemas/extension-entry.schema.json`. The required facts:
    - `id` — lowercase namespaced identity (e.g. `acme.calendar`), equal to

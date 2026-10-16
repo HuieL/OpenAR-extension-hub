@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "openra.craft-suite",
+  "kind": "extension",
+  "name": "Craft Suite",
+  "summary": "Choose optional editing components for documents and figures.",
+  "i18n": {
+    "zh-CN": "为文档和图表选择可选的编辑组件。",
+    "ja": "文書や図のための任意の編集コンポーネントを選びます。",
+    "ko": "문서와 그림을 위한 선택형 편집 구성 요소를 고릅니다.",
+    "es": "Elige componentes de edición opcionales para documentos y figuras."
+  },
+  "authors": [
+    {
+      "name": "HuieL",
+      "github": "HuieL"
+    }
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": [
+    "tools"
+  ],
+  "source": {
+    "repo": "https://github.com/HuieL/OpenAR-extension-hub",
+    "path": "entries/extensions/openra.craft-suite/about",
+    "revision": "f24133a112226f125921b3384b91443a1cca80aa"
+  },
+  "version": "1.2.0",
+  "license": "MIT",
+  "review": {
+    "status": "unreviewed"
+  },
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": [
+      "macos",
+      "linux"
+    ]
+  },
+  "delivery": "bundled",
+  "integration": "L2",
+  "capabilities": [],
+  "uiContributions": [
+    "main-page"
+  ],
+  "bindings": []
+}

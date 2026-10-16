@@ -34,7 +34,14 @@ MAX_ENTRY_BYTES = 256 * 1024
 MAX_ASSET_BYTES = 512 * 1024 * 1024
 LOCALES = {"en", "zh-CN", "ja", "ko", "es"}
 REVIEW_STATUSES = {"unreviewed", "reviewed", "deprecated", "high-risk"}
-DELIVERIES = {"package", "mcp-local", "mcp-remote", "cli"}
+DELIVERIES = {"package", "mcp-local", "mcp-remote", "cli", "bundled"}
+# First-party extensions whose code ships in the OpenAR app and which users
+# install from this hub (user decision 2026-10-16). Mirrors BUNDLED in the
+# host's src/local/extension_hub_bundled.rs; the host refuses any other id.
+BUNDLED_IDS = {
+    "openra.deep-research", "openra.paper-search", "openra.calendar",
+    "openra.deadlines", "openra.craft-suite", "scientific-compute",
+}
 INSTALLABLE = {"package", "mcp-local", "cli"}
 INTEGRATIONS = {"L0", "L1", "L2", "L3"}
 UI_CONTRIBUTIONS = {"main-page", "right-panel", "commands", "preview"}
@@ -410,9 +417,12 @@ def check_common(entry: dict, entry_id: str) -> bool:
         fail(entry_id, "schemaVersion must be 1")
     if entry["kind"] != "extension":
         fail(entry_id, "kind must be 'extension'")
-    if not namespaced_id(entry["id"]) or entry["id"] != entry_id:
+    if entry.get("delivery") == "bundled":
+        if entry["id"] not in BUNDLED_IDS or entry["id"] != entry_id:
+            fail(entry_id, "bundled delivery is only for the app-shipped extensions installed from this hub")
+    elif not namespaced_id(entry["id"]) or entry["id"] != entry_id:
         fail(entry_id, "id must be lowercase namespaced (>=2 dot segments) and equal the directory name")
-    if entry["id"].startswith("openra."):
+    elif entry["id"].startswith("openra.") or entry["id"] in BUNDLED_IDS:
         fail(entry_id, "public entries never use the reserved openra.* namespace (app-shipped definitions)")
     if not bounded(entry["name"], 64):
         fail(entry_id, "name must be a non-empty string of at most 64 chars")
@@ -594,6 +604,11 @@ def check_bindings(entry: dict, entry_id: str) -> None:
 
 def check_assets(entry: dict, entry_id: str) -> None:
     assets = entry.get("assets", [])
+    if entry.get("delivery") == "bundled":
+        # The code is already in the app; nothing is downloaded.
+        if assets:
+            fail(entry_id, "bundled entries carry no assets")
+        return
     installable = entry.get("delivery") in INSTALLABLE
     if installable == (not assets):
         if installable:
@@ -730,7 +745,8 @@ def validate_entries() -> dict:
         check_bindings(entry, entry_id)
         check_assets(entry, entry_id)
         check_mcp(entry, entry_id)
-        check_package_manifest(entry, entry_id, entry_dir)
+        if entry.get("delivery") != "bundled":
+            check_package_manifest(entry, entry_id, entry_dir)
         by_id[entry_id] = {
             "raw": entry_path.read_bytes(),
             "entry": entry,

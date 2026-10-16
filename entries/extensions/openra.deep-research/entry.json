@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "openra.deep-research",
+  "kind": "extension",
+  "name": "Deep Research",
+  "summary": "Run long-form research with your configured provider and read the saved reports.",
+  "i18n": {
+    "zh-CN": "使用已配置的服务开展深度研究，并阅读保存的报告。",
+    "ja": "設定済みのサービスで長文の調査を行い、保存されたレポートを読みます。",
+    "ko": "설정된 서비스로 심층 연구를 실행하고 저장된 보고서를 읽습니다.",
+    "es": "Realiza investigaciones extensas con tu proveedor configurado y lee los informes guardados."
+  },
+  "authors": [
+    {
+      "name": "HuieL",
+      "github": "HuieL"
+    }
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": [
+    "research"
+  ],
+  "source": {
+    "repo": "https://github.com/HuieL/OpenAR-extension-hub",
+    "path": "entries/extensions/openra.deep-research/about",
+    "revision": "f24133a112226f125921b3384b91443a1cca80aa"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "review": {
+    "status": "unreviewed"
+  },
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": [
+      "macos",
+      "linux"
+    ]
+  },
+  "delivery": "bundled",
+  "integration": "L2",
+  "capabilities": [],
+  "uiContributions": [
+    "main-page"
+  ],
+  "bindings": []
+}

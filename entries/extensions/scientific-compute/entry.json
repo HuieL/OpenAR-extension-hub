@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "scientific-compute",
+  "kind": "extension",
+  "name": "Scientific Compute",
+  "summary": "Install commit-pinned scientific tools, verify them with their self-tests and run them locally.",
+  "i18n": {
+    "zh-CN": "安装固定 commit 的科学计算工具，经自检验证后在本地运行。",
+    "ja": "コミット固定の科学計算ツールをインストールし、セルフテストで検証してローカルで実行します。",
+    "ko": "커밋이 고정된 과학 계산 도구를 설치하고 자체 테스트로 검증한 뒤 로컬에서 실행합니다.",
+    "es": "Instala herramientas científicas fijadas a un commit, verifícalas con sus autopruebas y ejecútalas localmente."
+  },
+  "authors": [
+    {
+      "name": "HuieL",
+      "github": "HuieL"
+    }
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": [
+    "tools"
+  ],
+  "source": {
+    "repo": "https://github.com/HuieL/OpenAR-extension-hub",
+    "path": "entries/extensions/scientific-compute/about",
+    "revision": "f24133a112226f125921b3384b91443a1cca80aa"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "review": {
+    "status": "unreviewed"
+  },
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": [
+      "macos",
+      "linux"
+    ]
+  },
+  "delivery": "bundled",
+  "integration": "L2",
+  "capabilities": [],
+  "uiContributions": [
+    "main-page"
+  ],
+  "bindings": []
+}

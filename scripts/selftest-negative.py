@@ -149,6 +149,25 @@ def case(name):
     return register
 
 
+@case("bundled delivery for an id the app does not ship")
+def _(e, m):
+    e["delivery"] = "bundled"
+    e.pop("mcp", None)
+    e["assets"] = []
+
+
+@case("bundled entry carrying assets")
+def _(e, m):
+    e["id"] = "openra.calendar"
+    e["delivery"] = "bundled"
+    e.pop("mcp", None)
+
+
+@case("app-shipped id under a downloadable delivery")
+def _(e, m):
+    e["id"] = "openra.calendar"
+
+
 @case("shell metacharacter in command word")
 def _(e, m):
     e["mcp"]["command"] = ["bin/echo-server", "--port; rm -rf /"]

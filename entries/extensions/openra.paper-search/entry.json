@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "openra.paper-search",
+  "kind": "extension",
+  "name": "Paper Search",
+  "summary": "Search papers, keep categorized reading lists and save results into your library.",
+  "i18n": {
+    "zh-CN": "检索论文，维护分类阅读列表，并把结果保存到文献库。",
+    "ja": "論文を検索し、分類した読書リストを管理し、結果をライブラリに保存します。",
+    "ko": "논문을 검색하고 분류된 읽기 목록을 관리하며 결과를 라이브러리에 저장합니다.",
+    "es": "Busca artículos, mantén listas de lectura por categorías y guarda los resultados en tu biblioteca."
+  },
+  "authors": [
+    {
+      "name": "HuieL",
+      "github": "HuieL"
+    }
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": [
+    "research"
+  ],
+  "source": {
+    "repo": "https://github.com/HuieL/OpenAR-extension-hub",
+    "path": "entries/extensions/openra.paper-search/about",
+    "revision": "f24133a112226f125921b3384b91443a1cca80aa"
+  },
+  "version": "1.3.0",
+  "license": "MIT",
+  "review": {
+    "status": "unreviewed"
+  },
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": [
+      "macos",
+      "linux"
+    ]
+  },
+  "delivery": "bundled",
+  "integration": "L2",
+  "capabilities": [],
+  "uiContributions": [
+    "main-page"
+  ],
+  "bindings": []
+}
