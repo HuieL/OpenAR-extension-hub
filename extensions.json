@@ -13,6 +13,17 @@
       "entrySha256": "602f1f28200a3c7d8ed0a088c89e672c2aceb04c86168fc56a09c9ed949f942d"
     },
     {
+      "id": "hub.mcp-stats",
+      "name": "Benchmark Stats",
+      "summary": "Offline statistics for comparing benchmark accuracies: a Wilson interval for one score, an exact McNemar test for two systems on the same items, and how many items a given gap needs.",
+      "delivery": "mcp-local",
+      "integration": "L1",
+      "version": "1.0.0",
+      "revision": "6d7a5c6ab8bcf5bcadcc8a5d9df0c559c3332608",
+      "entryPath": "entries/extensions/hub.mcp-stats/entry.json",
+      "entrySha256": "d179a0bf19a930c09be29fe9d6c993e9851bf55da15197ea6f485aefc3b8aaaf"
+    },
+    {
       "id": "huggingface.hub-mcp",
       "name": "Hugging Face",
       "summary": "Search and inspect models, datasets, Spaces and papers on the Hugging Face Hub through Hugging Face's hosted MCP service; registers a connection, nothing is installed. Works anonymously; signing in is optional.",

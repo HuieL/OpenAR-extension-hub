@@ -370,6 +370,18 @@ def _(e, m):
     schema["properties"]["bad.name"] = {"type": "string"}
 
 
+@case("package manifest integer field with a fractional bound")
+def _(e, m):
+    schema = m["actions"][0]["inputSchema"]
+    schema["properties"]["count"] = {"type": "integer", "minimum": 0.5}
+
+
+@case("package manifest integer field with an unknown keyword")
+def _(e, m):
+    schema = m["actions"][0]["inputSchema"]
+    schema["properties"]["count"] = {"type": "integer", "multipleOf": 2}
+
+
 @case("package manifest permissive configSchema")
 def _(e, m):
     m["configSchema"]["additionalProperties"] = True
