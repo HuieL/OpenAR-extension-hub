@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "id": "hub.mcp-stats",
+  "kind": "extension",
+  "name": "Benchmark Stats",
+  "summary": "Offline statistics for comparing benchmark accuracies: a Wilson interval for one score, an exact McNemar test for two systems on the same items, and how many items a given gap needs.",
+  "i18n": {
+    "zh-CN": "离线的基准准确率统计：单个分数的 Wilson 区间、两个系统同题对比的精确 McNemar 检验，以及检出某个差距所需的题量。",
+    "ja": "ベンチマーク精度を比較するためのオフライン統計：単一スコアの Wilson 区間、同じ問題での 2 システム比較の正確 McNemar 検定、ある差を検出するのに必要な問題数。",
+    "ko": "벤치마크 정확도 비교를 위한 오프라인 통계: 단일 점수의 Wilson 구간, 같은 문항에서 두 시스템을 비교하는 정확 McNemar 검정, 특정 차이를 검출하는 데 필요한 문항 수.",
+    "es": "Estadística sin conexión para comparar precisiones de benchmarks: intervalo de Wilson para una puntuación, prueba exacta de McNemar para dos sistemas en los mismos ítems y cuántos ítems requiere una diferencia dada."
+  },
+  "authors": [
+    {
+      "name": "HuieL",
+      "github": "HuieL"
+    }
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": [
+    "mcp",
+    "research"
+  ],
+  "source": {
+    "repo": "https://github.com/HuieL/OpenAR-extension-hub",
+    "path": "entries/extensions/hub.mcp-stats/package",
+    "revision": "3f7c83aedbbe27126d07983cc8c0cc6b90c2e880"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "review": {
+    "status": "unreviewed"
+  },
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": [
+      "macos",
+      "linux"
+    ]
+  },
+  "delivery": "mcp-local",
+  "integration": "L1",
+  "capabilities": [],
+  "uiContributions": [],
+  "bindings": [
+    {
+      "kind": "mcp",
+      "tool": "accuracy_interval",
+      "inputSchemaDigest": "e8e31afa687ea6d45e637444c3430b49be33bc2c1405ae3442134ad396eec0ff",
+      "outputSchemaDigest": "1f01ae5cd721bf12a3be1dd8098cae1ab6aadca298c2cc389cf240edc721aaa0"
+    },
+    {
+      "kind": "mcp",
+      "tool": "compare_paired",
+      "inputSchemaDigest": "1417a58725b239acc996d8295cf9418417c5796fdf03f536f27ff32b80c76b69",
+      "outputSchemaDigest": "d42bfb910226dec1fe4c540dfcd4508de4468e0620e3a268cf066c6d397827a8"
+    },
+    {
+      "kind": "mcp",
+      "tool": "items_needed",
+      "inputSchemaDigest": "32f86dd3dce42c41fd81e77dea33c505711771af790ca76dfa59d5928892c970",
+      "outputSchemaDigest": "89701771976e1b245f1b53402bc3cc42ae550f39428dff1bac2bd179bc344085"
+    }
+  ],
+  "assets": [
+    {
+      "platform": "macos",
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/3f7c83aedbbe27126d07983cc8c0cc6b90c2e880/entries/extensions/hub.mcp-stats/package/hub.mcp-stats-1.0.0.zip",
+      "sha256": "08a83198ff600284205ee14103d9654f1c460f7587cc8b0d956079d517d6092a",
+      "bytes": 4966
+    },
+    {
+      "platform": "linux",
+      "url": "https://raw.githubusercontent.com/HuieL/OpenAR-extension-hub/3f7c83aedbbe27126d07983cc8c0cc6b90c2e880/entries/extensions/hub.mcp-stats/package/hub.mcp-stats-1.0.0.zip",
+      "sha256": "08a83198ff600284205ee14103d9654f1c460f7587cc8b0d956079d517d6092a",
+      "bytes": 4966
+    }
+  ],
+  "mcp": {
+    "transport": "stdio",
+    "command": [
+      "server/stats.py"
+    ],
+    "version": "1.0.0",
+    "env": []
+  }
+}

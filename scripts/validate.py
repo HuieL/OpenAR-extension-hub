@@ -184,7 +184,7 @@ MANIFEST_FIELDS = {
 }
 FIELD_KEYS = {
     "string": {"maxBytes", "maxLength", "pattern"},
-    "integer": set(),
+    "integer": {"minimum", "maximum"},
     "number": {"minimum", "maximum"},
     "boolean": set(),
     "array": {"items", "maxItems"},
@@ -208,11 +208,13 @@ def valid_field(field, depth: int, nodes: list) -> bool:
                                       or not 0 < limit <= MAX_VALUE_BYTES):
                 return False
         return field.get("pattern") in (None, "^[0-9a-f]{64}$")
-    if kind == "number":
+    if kind in ("number", "integer"):
+        # Mirrors extension_manifest.rs: integer bounds are integers.
+        allowed = int if kind == "integer" else (int, float)
         low, high = field.get("minimum"), field.get("maximum")
         for bound in (low, high):
             if bound is not None and (isinstance(bound, bool)
-                                      or not isinstance(bound, (int, float))):
+                                      or not isinstance(bound, allowed)):
                 return False
         return low is None or high is None or low <= high
     if kind == "array":
