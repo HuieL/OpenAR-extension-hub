@@ -81,14 +81,35 @@ def wilson(correct, total, confidence=0.95):
     return {"accuracy": p, "lower": max(0.0, centre - half), "upper": min(1.0, centre + half), "confidence": confidence}
 
 
+EXACT_LIMIT = 2000
+
+
+def binomial_lower_tail(n, k):
+    """P(X <= k) for X ~ Binomial(n, 1/2), k <= n / 2.
+
+    Exact integer arithmetic for small n. Above EXACT_LIMIT the terms are
+    summed relative to the largest one, C(n, k) / 2^n (taken from lgamma),
+    walking down with C(n, i-1) = C(n, i) * i / (n - i + 1) and stopping once
+    a term no longer changes the sum: a few thousand steps at the input bound.
+    """
+    if n <= EXACT_LIMIT:
+        return sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n
+    log_peak = math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1) - n * math.log(2)
+    term, total = 1.0, 1.0
+    for i in range(k, 0, -1):
+        term *= i / (n - i + 1)
+        total += term
+        if term < total * 1e-17:
+            break
+    return math.exp(log_peak + math.log(total))
+
+
 def mcnemar_exact(only_a, only_b, alpha=0.05):
     n = only_a + only_b
     if n == 0:
         return {"discordant": 0, "p_value": 1.0, "significant": False, "alpha": alpha}
-    k = min(only_a, only_b)
-    # Two-sided exact binomial test with p = 1/2: 2 * P(X <= k), capped at 1.
-    tail = sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n
-    p_value = min(1.0, 2 * tail)
+    # Two-sided exact binomial test with p = 1/2: 2 * P(X <= min), capped at 1.
+    p_value = min(1.0, 2 * binomial_lower_tail(n, min(only_a, only_b)))
     return {"discordant": n, "p_value": p_value, "significant": p_value < alpha, "alpha": alpha}
 
 
@@ -149,8 +170,20 @@ def serve():
         line = line.strip()
         if not line:
             continue
-        request = json.loads(line)
-        method = request.get("method")
+        try:
+            request = json.loads(line)
+        except ValueError:
+            send({"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error"}})
+            continue
+        if not isinstance(request, dict) or not isinstance(request.get("method"), str):
+            send({"jsonrpc": "2.0", "id": None, "error": {"code": -32600, "message": "invalid request"}})
+            continue
+        method = request["method"]
+        params = request.get("params", {})
+        if not isinstance(params, dict):
+            if "id" in request:
+                reply(request, error={"code": -32602, "message": "params must be an object"})
+            continue
         if method == "initialize":
             reply(request, {
                 "protocolVersion": PROTOCOL_VERSION,
@@ -164,13 +197,16 @@ def serve():
         elif method == "tools/list":
             reply(request, {"tools": [{"name": name, **tool} for name, tool in TOOLS.items()]})
         elif method == "tools/call":
-            params = request.get("params", {})
             name = params.get("name")
-            if name not in TOOLS:
+            if not isinstance(name, str) or name not in TOOLS:
                 reply(request, error={"code": -32602, "message": "unknown tool"})
                 continue
+            arguments = params.get("arguments", {})
+            if not isinstance(arguments, dict):
+                reply(request, error={"code": -32602, "message": "arguments must be an object"})
+                continue
             try:
-                result = call(name, params.get("arguments", {}))
+                result = call(name, arguments)
             except InputError as problem:
                 reply(request, {"content": [{"type": "text", "text": str(problem)}], "isError": True})
                 continue
