@@ -13,6 +13,17 @@
       "entrySha256": "602f1f28200a3c7d8ed0a088c89e672c2aceb04c86168fc56a09c9ed949f942d"
     },
     {
+      "id": "hub.mcp-stats",
+      "name": "Benchmark Stats",
+      "summary": "Offline statistics for comparing benchmark accuracies: a Wilson interval for one score, an exact McNemar test for two systems on the same items, and how many items a given gap needs.",
+      "delivery": "mcp-local",
+      "integration": "L1",
+      "version": "1.0.0",
+      "revision": "3f7c83aedbbe27126d07983cc8c0cc6b90c2e880",
+      "entryPath": "entries/extensions/hub.mcp-stats/entry.json",
+      "entrySha256": "1bbf930803bb505bcd9f59a7c1a39fa5660bdec76fa61bd3d9905add0ba265db"
+    },
+    {
       "id": "huggingface.hub-mcp",
       "name": "Hugging Face",
       "summary": "Search and inspect models, datasets, Spaces and papers on the Hugging Face Hub through Hugging Face's hosted MCP service; registers a connection, nothing is installed. Works anonymously; signing in is optional.",
@@ -51,10 +62,10 @@
       "summary": "Up-to-date documentation and code examples for libraries and frameworks via Upstash's hosted Context7 MCP service; registers a connection, nothing is installed.",
       "delivery": "mcp-remote",
       "integration": "L0",
-      "version": "4.4.1",
-      "revision": "3cdd8d4add9747c2f59d03c83ce862cc0825c4bb",
+      "version": "4.4.2",
+      "revision": "a57359dc12bf41fab8b693904ac46589854d24c7",
       "entryPath": "entries/extensions/upstash.context7/entry.json",
-      "entrySha256": "a3cca25e3cbe99818fe29ab9903087b9d131201d1824c11af131f0a1e44a465c"
+      "entrySha256": "50b93bc3c3ca53096fa5b4c8075e66bd79ff2029b86fa85df70b42439c57ca0a"
     }
   ]
 }
