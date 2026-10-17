@@ -19,9 +19,9 @@
       "delivery": "mcp-local",
       "integration": "L1",
       "version": "1.0.0",
-      "revision": "6d7a5c6ab8bcf5bcadcc8a5d9df0c559c3332608",
+      "revision": "3f7c83aedbbe27126d07983cc8c0cc6b90c2e880",
       "entryPath": "entries/extensions/hub.mcp-stats/entry.json",
-      "entrySha256": "d179a0bf19a930c09be29fe9d6c993e9851bf55da15197ea6f485aefc3b8aaaf"
+      "entrySha256": "1bbf930803bb505bcd9f59a7c1a39fa5660bdec76fa61bd3d9905add0ba265db"
     },
     {
       "id": "huggingface.hub-mcp",
