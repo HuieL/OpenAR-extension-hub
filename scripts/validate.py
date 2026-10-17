@@ -39,7 +39,8 @@ DELIVERIES = {"package", "mcp-local", "mcp-remote", "cli", "bundled"}
 # install from this hub (user decision 2026-10-16). Mirrors BUNDLED in the
 # host's src/local/extension_hub_bundled.rs; the host refuses any other id.
 BUNDLED_IDS = {
-    "openra.deep-research", "openra.paper-search",
+    "openra.deep-research", "openra.paper-search", "openra.calendar",
+    "openra.deadlines", "openra.craft-suite", "scientific-compute",
 }
 INSTALLABLE = {"package", "mcp-local", "cli"}
 INTEGRATIONS = {"L0", "L1", "L2", "L3"}
