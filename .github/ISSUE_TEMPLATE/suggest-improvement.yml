@@ -1,0 +1,17 @@
+name: Suggest an improvement
+description: An idea for a listed extension's entry, or for an extension that should be listed.
+title: "[idea] "
+labels: ["suggestion"]
+body:
+  - type: input
+    id: entry
+    attributes:
+      label: Entry id
+      description: The entry this is about. Leave empty to suggest a new extension.
+  - type: textarea
+    id: idea
+    attributes:
+      label: Suggestion
+      description: What should change and why. For a new extension, link its public source repository.
+    validations:
+      required: true

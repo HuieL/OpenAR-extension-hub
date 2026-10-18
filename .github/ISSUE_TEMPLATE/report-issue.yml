@@ -1,0 +1,43 @@
+name: Report an issue with an entry
+description: Something about a listed extension is wrong, broken or unsafe.
+title: "[issue] "
+labels: ["entry-issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. This catalog only lists metadata; problems in the
+        extension's own code belong in its source repository, linked from the entry.
+        For a security problem, do not post details here — contact the entry's
+        maintainers privately and open an issue that only asks for a contact.
+  - type: input
+    id: entry
+    attributes:
+      label: Entry id
+      description: The id shown on the entry's page, e.g. upstash.context7.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version you installed or connected, if any.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem?
+      options:
+        - Install, update or connection fails
+        - The listed metadata is wrong (name, authors, license, source)
+        - The pinned source or artifact does not match the entry
+        - Safety or permissions concern
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened
+      description: Steps, what you expected and what you saw. Remove tokens, keys and private paths.
+    validations:
+      required: true
