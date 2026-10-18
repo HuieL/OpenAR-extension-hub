@@ -100,6 +100,7 @@
   - [ ] Community 收录、Featured、Verified 分开显示；精选 ≠ 安全审计；合集变更不自动安装或启用。
   - [ ] 离线用缓存目录；趋势数据缺失/失败不影响安装与使用。
   - 回执（2026-10-18，OpenRA `agent-y/extension-store@b35537bc6`）：商店条目详情列出作者/维护者/贡献者/提交者（可跳 GitHub）；详情里「by …」回到商店只看该作者的公开条目；排序含精选/最近更新，精选显示理由并注明精选≠安全审计；右栏社区区含 Trending/Collections 与 View source/Report issue/Contribute（只打开 GitHub 页面，不代发）；打开商店读缓存目录，刷新失败保留快照并提示。真实浏览器走查 33/33（亮/暗、1440/820/390）。勾选由 Review 依据本回执执行。
+  - 回执（2026-10-18，OpenRA `agent-y/extension-store@d14b41d33` + 本仓 `agent-y/issue-templates@1f25273`）：每个条目详情增「反馈」——Report an issue / Suggest an improvement 打开本仓新增的 GitHub Issue 表单（条目 id、版本已预填），Contribute 打开 CONTRIBUTING；只打开 GitHub，由用户确认提交，agent 不代发、OpenRA 不存评论。安全问题表单提示勿公开细节。勾选由 Review 依据本回执执行
 
 
 ## 7. Public Release Gate（用户 10-12，硬规则）
