@@ -51,10 +51,10 @@
       "summary": "Choose optional editing components for documents and figures.",
       "delivery": "bundled",
       "integration": "L2",
-      "version": "1.2.0",
+      "version": "1.4.0",
       "revision": "f24133a112226f125921b3384b91443a1cca80aa",
       "entryPath": "entries/extensions/openra.craft-suite/entry.json",
-      "entrySha256": "822bb05eefe91cb5863246c4064d6ec8dfd84578e5f17282a33246cfda700736"
+      "entrySha256": "3b3e96c09404f707297a2c015aaaccaf22ba5db0da06a86919f76e99ef7b357e"
     },
     {
       "id": "openra.deadlines",
