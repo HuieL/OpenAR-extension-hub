@@ -35,6 +35,17 @@
       "entrySha256": "a809e49b072f3678d5c78430766d8ebb681b82f1d2e76d58f2e13c44c8822671"
     },
     {
+      "id": "idosal.git-mcp",
+      "name": "GitMCP",
+      "summary": "Read and search any public GitHub repository's documentation and code through GitMCP's hosted MCP service, e.g. to check how a paper's released code or a library actually works; registers a connection, nothing is installed. Works anonymously.",
+      "delivery": "mcp-remote",
+      "integration": "L0",
+      "version": "1.1.0",
+      "revision": "c487a29895dcfcb5b672247e646426a56e2051c1",
+      "entryPath": "entries/extensions/idosal.git-mcp/entry.json",
+      "entrySha256": "941e84d3e8237455525d8fd5b00c5ef170ecc370b474973c687c6c7e1404c45c"
+    },
+    {
       "id": "upstash.context7",
       "name": "Context7",
       "summary": "Up-to-date documentation and code examples for libraries and frameworks via Upstash's hosted Context7 MCP service; registers a connection, nothing is installed.",

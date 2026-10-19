@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "id": "idosal.git-mcp",
+  "kind": "extension",
+  "name": "GitMCP",
+  "summary": "Read and search any public GitHub repository's documentation and code through GitMCP's hosted MCP service, e.g. to check how a paper's released code or a library actually works; registers a connection, nothing is installed. Works anonymously.",
+  "i18n": {
+    "zh-CN": "通过 GitMCP 托管的 MCP 服务读取和检索任意公开 GitHub 仓库的文档与代码，例如核对论文开源代码或某个库的实际实现；只注册连接，不安装任何内容。匿名可用。",
+    "ja": "GitMCP がホストする MCP サービス経由で、公開 GitHub リポジトリのドキュメントとコードを読み、検索（論文の公開コードやライブラリの実装確認など）。接続を登録するだけで、何もインストールしない。匿名で利用可能。",
+    "ko": "GitMCP가 호스팅하는 MCP 서비스를 통해 공개 GitHub 저장소의 문서와 코드를 읽고 검색(논문 공개 코드나 라이브러리 실제 구현 확인 등). 연결만 등록하며 아무것도 설치하지 않음. 익명으로 사용 가능.",
+    "es": "Lee y busca la documentación y el código de cualquier repositorio público de GitHub mediante el servicio MCP alojado de GitMCP, por ejemplo para comprobar cómo funciona el código publicado de un artículo o una biblioteca; registra una conexión, no instala nada. Funciona de forma anónima."
+  },
+  "authors": [
+    {
+      "name": "Ido Salomon",
+      "github": "idosal"
+    },
+    {
+      "name": "Liad Yosef"
+    }
+  ],
+  "adapters": [
+    "HuieL"
+  ],
+  "registrySubmitter": "HuieL",
+  "categories": [
+    "mcp",
+    "research",
+    "code",
+    "documentation"
+  ],
+  "source": {
+    "repo": "https://github.com/idosal/git-mcp",
+    "path": ".",
+    "revision": "c487a29895dcfcb5b672247e646426a56e2051c1"
+  },
+  "version": "1.1.0",
+  "license": "Apache-2.0",
+  "review": {
+    "status": "unreviewed"
+  },
+  "compat": {
+    "minHost": "0.3.0",
+    "hostApi": 1,
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ]
+  },
+  "delivery": "mcp-remote",
+  "integration": "L0",
+  "capabilities": [],
+  "uiContributions": [],
+  "bindings": [],
+  "mcp": {
+    "endpoint": "https://gitmcp.io/docs",
+    "authRequirements": [],
+    "observed": {
+      "tools": [
+        "match_common_libs_owner_repo_mapping",
+        "fetch_generic_documentation",
+        "search_generic_documentation",
+        "search_generic_code",
+        "fetch_generic_url_content"
+      ],
+      "resources": [],
+      "observedAt": "2026-10-19T08:56:47Z",
+      "serverVersion": "1.1.0"
+    }
+  }
+}
