@@ -52,9 +52,9 @@
       "delivery": "bundled",
       "integration": "L2",
       "version": "1.4.0",
-      "revision": "f24133a112226f125921b3384b91443a1cca80aa",
+      "revision": "87220e500043e2f018c3f21146d880e77f64ba02",
       "entryPath": "entries/extensions/openra.craft-suite/entry.json",
-      "entrySha256": "3b3e96c09404f707297a2c015aaaccaf22ba5db0da06a86919f76e99ef7b357e"
+      "entrySha256": "49eac7cc8dd647c9d04543d39817a99e7e45cbd78d200f95405875b01c056c4e"
     },
     {
       "id": "openra.deadlines",

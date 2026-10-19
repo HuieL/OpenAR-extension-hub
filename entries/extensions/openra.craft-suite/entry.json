@@ -23,7 +23,7 @@
   "source": {
     "repo": "https://github.com/HuieL/OpenAR-extension-hub",
     "path": "entries/extensions/openra.craft-suite/about",
-    "revision": "f24133a112226f125921b3384b91443a1cca80aa"
+    "revision": "87220e500043e2f018c3f21146d880e77f64ba02"
   },
   "version": "1.4.0",
   "license": "MIT",
