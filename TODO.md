@@ -67,6 +67,7 @@
 ### SY-02 原生适配与贡献（LATER）
 - [ ] ~~calendar 作为 HUB-M2 的三栏样例~~（用户裁定取消：内置不上 hub）；三栏样例由首个 L2 第三方适配条目承担（与 G/D 核对）。
 - [ ] Craft Suite：一个 Suite 条目引用各组件（Photo/Vector/Deck/Print…），组件独立版本/平台；安装 Suite 不安装全部组件（与 H 核对）。
+  - 回执（2026-10-19，本仓 `agent-y/bundled-entries-six@efdda75` + OpenRA `agent-y/craft-components@7afd15c0b`）：Suite 仍是一个条目（bundled，1.4.0 与 app 一致）；其 about 页列出 12 个可选组件（引擎、上游仓、固定 release），**装 Suite 不装任何组件**——组件在 Craft Suite 页面各自安装/更新/回滚，各自固定版本与平台、下载按发布校验和核对、须批准确切文件后才装、不自动更新。组件引擎是 app 内固定 release，不另上 hub 条目，故未用 `dependencies[]`。勾选由 Review 依据本回执执行
   - Y 备注（2026-10-13）：schema 已支持，无需改契约——Suite 条目=普通 extension entry，用 `dependencies[]`（≤8，`{id, version?, optional?}`）引用各组件条目 id，组件全部 `optional: true` 即"安装 Suite 不安装全部组件"（无依赖求解，运行时按需）。**等 H 提供**：组件清单（哪些上 hub、各自 version/platforms/artifacts/上游 repo+revision）。H 给事实后 Y 一个分支即可上条目。
 - [ ] CONTRIBUTING：开发者自托管源码/发行包，向本仓提交元数据 PR；外部 MCP 可从官方 MCP Registry 只读导入元数据（须固定 revision 并实测能力）。
   - 回执（2026-10-13，`agent-y/context7-remote@354514c`，基 `main@b556e7e`，2 文件）：CONTRIBUTING 新增 "Remote MCP services" 节（observed=实活探测非承诺；元数据可只读导入官方 MCP Registry/上游仓，观测必须来自本 hub 自己的探测；source 仍固定 40-hex revision；观测漂移→更新或弃用，绝不静默改写）+ 首个真实第三方 `mcp-remote` 条目 `upstash.context7`（MIT、上游仓可钉、无鉴权；2026-10-13 实测握手：server 4.3.0、tools [resolve-library-id, query-docs]、resources []、含一次真实 tools/call）。validate/build-index --check/38 负例全过；勾选由 Review 依据本回执执行。
@@ -89,6 +90,7 @@
   - [ ] `mcp-remote` 只登记连接，不伪装已安装（bundled 已随用户裁定移除）。
   - [ ] MCP/CLI 使用已有 adapter 实测 transport 与 tools，纯浏览不启动不可信服务；通用工具表单复用 G 已合的 MCP generic tools 宿主表单。
   - [ ] 测试：`hub.mcp-echo` 从目录→批准→固定安装→项目内调用→结果可 @→升级→回滚；目录离线时已装能力可用。
+  - 回执（2026-10-19，OpenRA main 已合 hub-install-routes / hub-manage 系列）：88 复用 X 的 registry 客户端读条目，`package`/`mcp-local`/`cli` 经 C 的安装内核 + ChangeSet（stage→approve 确切哈希→apply→rollback）；89 `mcp-remote` 只登记托管连接（Add connection，已连则直接显示），不当作已安装；90 浏览只读目录与条目、不启动服务，工具调用复用宿主通用工具表单；91 agent 腿在 Linux 实测（stage→verify 通过，approve 对 agent 拒绝属预期），**人工腿（批准→调用→@→回滚）在 OpenRA 人工验收单待用户**；离线时用上次成功的目录快照。勾选由 Review 依据本回执执行
 - 不碰：契约定义与 Hub UI（G+D）、registry 客户端（X）、安装内核（C）。
 
 ## 6. HUB-11 Community, Credits & Discovery（后续里程碑 SY-M4；规格 OpenRA `docs/hub-community-discovery.md`）
@@ -99,6 +101,7 @@
   - [ ] 反馈与贡献按钮：View Source / Report Issue / Suggest Improvement / Contribute——打开对应 GitHub Issue/Discussion/PR 模板，由用户确认后提交，agent 不代发；OpenRA 不存评论。
   - [ ] Community 收录、Featured、Verified 分开显示；精选 ≠ 安全审计；合集变更不自动安装或启用。
   - [ ] 离线用缓存目录；趋势数据缺失/失败不影响安装与使用。
+  - 回执（2026-10-19，OpenRA `agent-y/extension-store@7329a36e0`）：100 Verified（Reviewed 徽章，仅当评审覆盖该源修订）、Featured（精选架 + 理由 + 「精选≠安全审计」说明）、Community（右栏收录/合集/Trending 标数据源与窗口）分开显示，合集只浏览不安装/启用；101 打开商店读缓存目录，刷新失败显示「显示缓存快照」且商店照常可用，社区/趋势数据读取失败不阻断浏览与安装。勾选由 Review 依据本回执执行
   - 回执（2026-10-18，OpenRA `agent-y/extension-store@b35537bc6`）：商店条目详情列出作者/维护者/贡献者/提交者（可跳 GitHub）；详情里「by …」回到商店只看该作者的公开条目；排序含精选/最近更新，精选显示理由并注明精选≠安全审计；右栏社区区含 Trending/Collections 与 View source/Report issue/Contribute（只打开 GitHub 页面，不代发）；打开商店读缓存目录，刷新失败保留快照并提示。真实浏览器走查 33/33（亮/暗、1440/820/390）。勾选由 Review 依据本回执执行。
   - 回执（2026-10-18，OpenRA `agent-y/extension-store@d14b41d33` + 本仓 `agent-y/issue-templates@1f25273`）：每个条目详情增「反馈」——Report an issue / Suggest an improvement 打开本仓新增的 GitHub Issue 表单（条目 id、版本已预填），Contribute 打开 CONTRIBUTING；只打开 GitHub，由用户确认提交，agent 不代发、OpenRA 不存评论。安全问题表单提示勿公开细节。勾选由 Review 依据本回执执行
 
