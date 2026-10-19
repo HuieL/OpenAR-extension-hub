@@ -36,8 +36,8 @@ LOCALES = {"en", "zh-CN", "ja", "ko", "es"}
 REVIEW_STATUSES = {"unreviewed", "reviewed", "deprecated", "high-risk"}
 DELIVERIES = {"package", "mcp-local", "mcp-remote", "cli", "bundled"}
 # First-party extensions whose code ships in the OpenAR app and which users
-# install from this hub (user decision 2026-10-16). Mirrors BUNDLED in the
-# host's src/local/extension_hub_bundled.rs; the host refuses any other id.
+# install from this hub (user decision 2026-10-16). Mirrors the app's own
+# allowlist of bundled extensions; the app refuses any other id.
 BUNDLED_IDS = {
     "openra.deep-research", "openra.paper-search",
 }
@@ -71,7 +71,7 @@ def argv_word(value) -> bool:
     return all(part not in ("", "..") for part in value.split("/"))
 
 # Cloud metadata ranges the runtime harness refuses (169.254.0.0/16,
-# 100.100.100.200, fd00:ec2::/32), kept in step with harness/mcp.rs.
+# 100.100.100.200, fd00:ec2::/32), kept in step with the app's MCP address checks.
 METADATA_V4_NETWORKS = [ipaddress.ip_network("169.254.0.0/16")]
 METADATA_V4_HOSTS = [ipaddress.ip_address("100.100.100.200")]
 METADATA_V6_NETWORKS = [ipaddress.ip_network("fd00:ec2::/32")]
@@ -208,7 +208,7 @@ def valid_field(field, depth: int, nodes: list) -> bool:
                 return False
         return field.get("pattern") in (None, "^[0-9a-f]{64}$")
     if kind in ("number", "integer"):
-        # Mirrors extension_manifest.rs: integer bounds are integers.
+        # Mirrors the app's manifest reader: integer bounds are integers.
         allowed = int if kind == "integer" else (int, float)
         low, high = field.get("minimum"), field.get("maximum")
         for bound in (low, high):
