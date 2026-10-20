@@ -18,6 +18,13 @@ pick the matching entry.
   by revision conflicts. Original timezones, all-day and floating times stay
   distinct; ambiguous or unknown times are flagged for review instead of
   guessed.
+- **Event details and repeats.** Events can carry a location and notes, and a
+  daily, weekly, monthly or yearly repeat (interval, occurrence count or end
+  date, weekday selection for weekly rules, per-date exceptions). Repeats
+  expand only inside the requested window, a repeat needs a start, and a
+  series that hits the expansion bound is reported as truncated, never
+  guessed. Days and weeks stay honest the same way: busy checks include
+  occurrences that start before the window, with their own truncation count.
 - **One window, several sources.** The unified day/week window reads your
   events, the deadlines source layer (below), and a read-only CCF conference
   deadline snapshot embedded from one pinned upstream commit. Each source
