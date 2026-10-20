@@ -48,13 +48,13 @@
     {
       "id": "openra.calendar",
       "name": "Calendar",
-      "summary": "A local calendar for events, alongside your deadlines.",
+      "summary": "A unified local calendar: events and day/week agendas, with your deadlines as a source layer.",
       "delivery": "bundled",
       "integration": "L2",
-      "version": "1.0.0",
-      "revision": "f24133a112226f125921b3384b91443a1cca80aa",
+      "version": "2.4.0",
+      "revision": "d8b189f92d05afc2ef4e8dd908c948cb5ce6a2d1",
       "entryPath": "entries/extensions/openra.calendar/entry.json",
-      "entrySha256": "638f22a0fc498af67e1d01c6a050387298ae94e938f015ea70b66dc66c8ced71"
+      "entrySha256": "cbe2aa524d4c8026c8b71dd8983e8a0f376217a6ea49bc6c91ff1b9986dcea9d"
     },
     {
       "id": "openra.craft-suite",
