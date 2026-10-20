@@ -25,6 +25,10 @@ pick the matching entry.
   series that hits the expansion bound is reported as truncated, never
   guessed. Days and weeks stay honest the same way: busy checks include
   occurrences that start before the window, with their own truncation count.
+- **Local calendars.** Events can carry an optional calendar label (up to
+  sixteen local calendars, label at most sixty-four bytes); an event without a
+  label stays on your primary calendar, and the editor offers the labels you
+  already use.
 - **One window, several sources.** The unified day/week window reads your
   events, the deadlines source layer (below), and a read-only CCF conference
   deadline snapshot embedded from one pinned upstream commit. Each source
