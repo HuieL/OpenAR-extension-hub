@@ -29,6 +29,9 @@ pick the matching entry.
   sixteen local calendars, label at most sixty-four bytes); an event without a
   label stays on your primary calendar, and the editor offers the labels you
   already use.
+- **Range search.** Read any explicit start-to-end range instead of a fixed
+  day or week: the end date is exclusive, the span is bounded to 366 days,
+  and the same honest placement, truncation and exclusion counts apply.
 - **One window, several sources.** The unified day/week window reads your
   events, the deadlines source layer (below), and a read-only CCF conference
   deadline snapshot embedded from one pinned upstream commit. Each source
