@@ -34,9 +34,10 @@ pick the matching entry.
   and the same honest placement, truncation and exclusion counts apply.
 - **One window, several sources.** The unified day/week window reads your
   events, the deadlines source layer (below), and a read-only CCF conference
-  deadline snapshot embedded from one pinned upstream commit. Each source
-  keeps its own revision and status; disabling one degrades only that layer,
-  and row counts are reported instead of silently truncated.
+  deadline snapshot embedded from one pinned upstream commit, plus the
+  projected rows of the subscribed feeds below that have a proven body. Each
+  source keeps its own revision and status; disabling one degrades only that
+  layer, and row counts are reported instead of silently truncated.
 - **Deadline watches.** Optional personal reminder rules over both layers:
   bounded offsets, bindings pinned to a content signature, one audited
   transition per replan, and submitted state or private notes that source
@@ -51,7 +52,12 @@ pick the matching entry.
   `subscription.refresh` fetches one feed on demand with ETag/Last-Modified
   conditional requests, reports unchanged content as not-modified, keeps the
   last successful sync separate from failed attempts, and never imports
-  fetched events automatically.
+  fetched events automatically. Fetched events overlay the unified read as a
+  separate read-only layer only after a fetch succeeded: each feed shows its
+  own honest state (pending, stale, unavailable), rows come from the last
+  stored proven body rather than the raw feed text, and nothing is imported
+  into your manual events. The calendar panel manages the list — add, label,
+  remove and refresh — and untrusted feed content never gains write access.
 - **Preparation blocks.** Bounded work blocks linked to a deadline marker —
   they never modify the official deadline time. `busy` answers conflict
   checks by merging precise zoned intervals of records and blocks; entries
