@@ -63,6 +63,14 @@ pick the matching entry.
   checks by merging precise zoned intervals of records and blocks; entries
   without precise times are reported as excluded, never inferred, and
   deadlines themselves are due points, never busy time.
+- **Research focus.** Pin up to three research goals: a project with a
+  concrete deadline point, either a labeled manual time or a stage from the
+  read-only CCF snapshot. A TBD stage honestly stays "to be announced" —
+  no countdown is invented — and a deadline whose time moved is reported as
+  moved. Goals carry their own milestones (title, due point, done, note);
+  marking a milestone done keeps its identity, and a preparation block can
+  link to a pinned goal the same way it links to a deadline marker, without
+  ever touching the official deadline.
 
 ## Deadlines
 
