@@ -42,8 +42,17 @@ pick the matching entry.
   bounded offsets, bindings pinned to a content signature, one audited
   transition per replan, and submitted state or private notes that source
   updates never overwrite. No precise reminder is generated for TBD or
-  unresolved times. The reminder engine is not wired, so saved rules schedule
-  nothing yet.
+  unresolved times. Due watches fire through the host's shared reminder
+  engine: candidates pass the same quiet-hours, quota and snooze policy as
+  personal reminders, delivery is at-least-once, rescheduling a stage lets
+  its old reminder keys lapse naturally, and a disabled instance delivers
+  nothing.
+- **Deadline filtering.** The conference layer can be narrowed before the
+  window budgets apply: a case-insensitive title query, a CCF rank
+  selection and a direction (subfield) selection combine into one filter.
+  Stages dropped by it are counted as filtered out rather than silently
+  missing, and the active filter is echoed back with the read so the display
+  always shows what was asked.
 - **ICS preview.** A bounded read-only `ics.parse` previews untrusted
   iCalendar text: supported repeats expand within the requested window,
   unsupported rule parts degrade to the master occurrence with reported
