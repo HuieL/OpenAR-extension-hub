@@ -74,9 +74,9 @@
       "delivery": "bundled",
       "integration": "L2",
       "version": "1.2.0",
-      "revision": "f24133a112226f125921b3384b91443a1cca80aa",
+      "revision": "b2941fffe7c7d5c1d40dbb21d1d2effb85bdd3ba",
       "entryPath": "entries/extensions/openra.deadlines/entry.json",
-      "entrySha256": "d98a301e4f3c9d546524da097f5caa62ef5de904e1800b646acd44a26fd0c407"
+      "entrySha256": "4451ef9119a09b5d23da7fb8ab116f43400853e2bdcba86cc3a172f33a1d6111"
     },
     {
       "id": "openra.deep-research",
