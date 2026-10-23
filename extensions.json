@@ -51,10 +51,10 @@
       "summary": "A unified local calendar: events and day/week agendas, with your deadlines as a source layer.",
       "delivery": "bundled",
       "integration": "L2",
-      "version": "2.11.0",
-      "revision": "361c1863ece7763ccb821e00dc8dd0e964536ea6",
+      "version": "2.16.0",
+      "revision": "13851face4677ddb81ebff458c3da8217432e46f",
       "entryPath": "entries/extensions/openra.calendar/entry.json",
-      "entrySha256": "54bab685212291f699322df9ef595979bc093eade58e68173b7e20d098eb2a7f"
+      "entrySha256": "3b0f5d6381d2ba005fb009692abf6e1f0c0d0b814e5e741351c63260b11730db"
     },
     {
       "id": "openra.craft-suite",

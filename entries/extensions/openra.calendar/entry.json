@@ -23,9 +23,9 @@
   "source": {
     "repo": "https://github.com/HuieL/OpenAR-extension-hub",
     "path": "entries/extensions/openra.calendar/about",
-    "revision": "361c1863ece7763ccb821e00dc8dd0e964536ea6"
+    "revision": "13851face4677ddb81ebff458c3da8217432e46f"
   },
-  "version": "2.11.0",
+  "version": "2.16.0",
   "license": "MIT",
   "review": {
     "status": "unreviewed"
