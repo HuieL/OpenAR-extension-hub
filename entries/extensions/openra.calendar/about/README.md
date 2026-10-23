@@ -72,6 +72,41 @@ pick the matching entry.
   checks by merging precise zoned intervals of records and blocks; entries
   without precise times are reported as excluded, never inferred, and
   deadlines themselves are due points, never busy time.
+- **Connected calendars (CalDAV).** Store a small list of CalDAV accounts;
+  `connection.refresh` discovers the address book's principal and calendars
+  on demand and keeps per-calendar receipts (change tags, content
+  signatures, coverage) separate from failed attempts, the same honest
+  pending/stale/unavailable states as subscriptions. Fetched events overlay
+  the unified read as their own read-only layer only after a proven body,
+  with a management editor for add, label, edit and remove. Provider
+  interfaces (Google, Outlook) are frozen optional extensions; nothing here
+  registers an account with any service.
+- **Writing back to a connection.** `connection.event.save` and
+  `connection.event.delete` propose one record at a time against the
+  calendar that already holds it: the server's entity tag is the write token,
+  a stale token is a revision conflict, never an overwrite, and every
+  accepted write is auditable. Untrusted connection content never gains
+  rights over your local events.
+- **Single-record saves.** `event.save` is one create-or-replace call for one
+  manual event: a new id creates only with no held signature, replacing an
+  existing id needs the signature the last read handed you (the same
+  single-record compare-and-set the connections use), and an identical
+  re-save changes nothing. The reply returns the stored record and its new
+  signature, so chained edits need no re-read.
+- **Agent-friendly reads and writes.** The host may let a coding agent call a
+  declared, audited subset of these actions — reads (list, agenda, search,
+  busy, watches, milestones) and the two single-record saves. That
+  declaration lives in the manifest; the host still gates every call through
+  its own permission, approval and audit flow, and side-effect actions are
+  refused outright from an agent channel until that wiring exists. Imports,
+  exports and account management stay human-only.
+- **System calendar (macOS).** On a Mac, the unified read also shows the
+  events already in your system calendar as a read-only layer: a live
+  fetch, never stored, never merged into your events. Access is asked for
+  once through the `system.grant` action (the system prompt shows up at
+  most once; an unanswered prompt is reported as pending, never assumed),
+  and a denied or unavailable layer degrades alone. Windows and Linux
+  report the layer as unavailable and keep every local feature.
 - **Research focus.** Pin up to three research goals: a project with a
   concrete deadline point, either a labeled manual time or a stage from the
   read-only CCF snapshot. A TBD stage honestly stays "to be announced" —
