@@ -48,13 +48,13 @@
     {
       "id": "openra.calendar",
       "name": "Calendar",
-      "summary": "A local calendar for events, alongside your deadlines.",
+      "summary": "A unified local calendar: events and day/week agendas, with your deadlines as a source layer.",
       "delivery": "bundled",
       "integration": "L2",
-      "version": "1.0.0",
-      "revision": "f24133a112226f125921b3384b91443a1cca80aa",
+      "version": "2.16.0",
+      "revision": "13851face4677ddb81ebff458c3da8217432e46f",
       "entryPath": "entries/extensions/openra.calendar/entry.json",
-      "entrySha256": "638f22a0fc498af67e1d01c6a050387298ae94e938f015ea70b66dc66c8ced71"
+      "entrySha256": "3b0f5d6381d2ba005fb009692abf6e1f0c0d0b814e5e741351c63260b11730db"
     },
     {
       "id": "openra.craft-suite",
@@ -74,9 +74,9 @@
       "delivery": "bundled",
       "integration": "L2",
       "version": "1.2.0",
-      "revision": "f24133a112226f125921b3384b91443a1cca80aa",
+      "revision": "b2941fffe7c7d5c1d40dbb21d1d2effb85bdd3ba",
       "entryPath": "entries/extensions/openra.deadlines/entry.json",
-      "entrySha256": "d98a301e4f3c9d546524da097f5caa62ef5de904e1800b646acd44a26fd0c407"
+      "entrySha256": "4451ef9119a09b5d23da7fb8ab116f43400853e2bdcba86cc3a172f33a1d6111"
     },
     {
       "id": "openra.deep-research",

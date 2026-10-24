@@ -3,12 +3,12 @@
   "id": "openra.calendar",
   "kind": "extension",
   "name": "Calendar",
-  "summary": "A local calendar for events, alongside your deadlines.",
+  "summary": "A unified local calendar: events and day/week agendas, with your deadlines as a source layer.",
   "i18n": {
-    "zh-CN": "本地日历，与截止日期并列管理日程。",
-    "ja": "締め切りと並べて予定を管理するローカルカレンダー。",
-    "ko": "마감일과 함께 일정을 관리하는 로컬 캘린더.",
-    "es": "Un calendario local para eventos, junto a tus fechas límite."
+    "zh-CN": "统一的本地日历：事件与日/周议程，截止日期作为来源层。",
+    "ja": "統合ローカルカレンダー：予定と日・週の議題に、締め切りをソース層として表示します。",
+    "ko": "통합 로컬 캘린더: 일정과 일간·주간 안건에 마감일을 소스 계층으로 표시합니다.",
+    "es": "Un calendario local unificado: eventos y agendas diarias o semanales, con tus fechas límite como capa de fuentes."
   },
   "authors": [
     {
@@ -23,9 +23,9 @@
   "source": {
     "repo": "https://github.com/HuieL/OpenAR-extension-hub",
     "path": "entries/extensions/openra.calendar/about",
-    "revision": "f24133a112226f125921b3384b91443a1cca80aa"
+    "revision": "13851face4677ddb81ebff458c3da8217432e46f"
   },
-  "version": "1.0.0",
+  "version": "2.16.0",
   "license": "MIT",
   "review": {
     "status": "unreviewed"
